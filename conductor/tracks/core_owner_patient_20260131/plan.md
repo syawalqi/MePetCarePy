@@ -1,7 +1,7 @@
 # Implementation Plan: Core Owner and Patient Management
 
 ## Phase 1: Backend Foundation & Schema
-- [ ] Task: Set up FastAPI project structure and Supabase integration
+- [x] Task: Set up FastAPI project structure and Supabase integration af570fe
 - [ ] Task: Define Owner and Patient database models with soft delete support
 - [ ] Task: Create Pydantic schemas for request/response validation
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Backend Foundation & Schema' (Protocol in workflow.md)
