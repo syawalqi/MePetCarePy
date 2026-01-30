@@ -15,6 +15,10 @@ def create_patient(patient: PatientCreate, db: Session = Depends(get_db)):
 def read_patients(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud_patient.get_patients(db, skip=skip, limit=limit)
 
+@router.get("/search/", response_model=List[PatientRead])
+def search_patients(query: str, db: Session = Depends(get_db)):
+    return crud_patient.search_patients(db, query=query)
+
 @router.get("/{patient_id}", response_model=PatientRead)
 def read_patient(patient_id: int, db: Session = Depends(get_db)):
     db_patient = crud_patient.get_patient(db, patient_id)

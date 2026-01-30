@@ -15,6 +15,10 @@ def create_owner(owner: OwnerCreate, db: Session = Depends(get_db)):
 def read_owners(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud_owner.get_owners(db, skip=skip, limit=limit)
 
+@router.get("/search/", response_model=List[OwnerRead])
+def search_owners(query: str, db: Session = Depends(get_db)):
+    return crud_owner.search_owners(db, query=query)
+
 @router.get("/{owner_id}", response_model=OwnerRead)
 def read_owner(owner_id: int, db: Session = Depends(get_db)):
     db_owner = crud_owner.get_owner(db, owner_id)

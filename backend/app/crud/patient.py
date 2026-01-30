@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, UTC
 from app.models.patient import Patient
+from app.models.owner import Owner
 from app.schemas.patient import PatientCreate, PatientUpdate
 
 def get_patient(db: Session, patient_id: int):
@@ -34,3 +35,9 @@ def delete_patient(db: Session, patient_id: int):
     db_patient.deleted_at = datetime.now(UTC)
     db.commit()
     return db_patient
+
+def search_patients(db: Session, query: str):
+    return db.query(Patient).join(Owner).filter(
+        Patient.is_deleted == False,
+        (Patient.name.ilike(f"%{query}%")) | (Owner.phone_number.ilike(f"%{query}%"))
+    ).all()

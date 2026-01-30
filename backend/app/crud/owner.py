@@ -34,3 +34,9 @@ def delete_owner(db: Session, owner_id: int):
     db_owner.deleted_at = datetime.now(UTC)
     db.commit()
     return db_owner
+
+def search_owners(db: Session, query: str):
+    return db.query(Owner).filter(
+        Owner.is_deleted == False,
+        (Owner.full_name.ilike(f"%{query}%")) | (Owner.phone_number.ilike(f"%{query}%"))
+    ).all()

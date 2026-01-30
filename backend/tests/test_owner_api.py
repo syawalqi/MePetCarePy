@@ -1,52 +1,6 @@
-import os
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from app.main import app
-from app.database import get_db
-from app.models import Base
-from app.models.owner import Owner
-from app.models.patient import Patient
 
-# Use a separate file for tests to avoid in-memory connection sharing issues
-TEST_DB_FILE = "./test_api.db"
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{TEST_DB_FILE}"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-@pytest.fixture(autouse=True)
-def setup_db():
-    # Ensure a clean start
-    if os.path.exists(TEST_DB_FILE):
-        try:
-            os.remove(TEST_DB_FILE)
-        except PermissionError:
-            pass
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
-    if os.path.exists(TEST_DB_FILE):
-        try:
-            os.remove(TEST_DB_FILE)
-        except PermissionError:
-            pass
-
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-app.dependency_overrides[get_db] = override_get_db
-
-client = TestClient(app)
-
-def test_create_owner():
+def test_create_owner(client):
     response = client.post(
         "/owners/",
         json={
@@ -61,7 +15,7 @@ def test_create_owner():
     assert data["full_name"] == "John Doe"
     assert "id" in data
 
-def test_get_owners():
+def test_get_owners(client):
     # Create an owner first
     client.post(
         "/owners/",
@@ -75,7 +29,7 @@ def test_get_owners():
     assert isinstance(response.json(), list)
     assert len(response.json()) >= 1
 
-def test_get_owner_by_id():
+def test_get_owner_by_id(client):
     create_response = client.post(
         "/owners/",
         json={
@@ -89,7 +43,7 @@ def test_get_owner_by_id():
     assert response.status_code == 200
     assert response.json()["full_name"] == "Jane Doe"
 
-def test_update_owner():
+def test_update_owner(client):
     create_response = client.post(
         "/owners/",
         json={
@@ -106,7 +60,7 @@ def test_update_owner():
     assert response.status_code == 200
     assert response.json()["full_name"] == "New Name"
 
-def test_delete_owner():
+def test_delete_owner(client):
     create_response = client.post(
         "/owners/",
         json={
