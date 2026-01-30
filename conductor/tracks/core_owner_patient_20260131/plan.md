@@ -1,6 +1,6 @@
 # Implementation Plan: Core Owner and Patient Management
 
-## Phase 1: Backend Foundation & Schema
+## Phase 1: Backend Foundation & Schema [checkpoint: 47c2a26]
 - [x] Task: Set up FastAPI project structure and Supabase integration af570fe
 - [x] Task: Define Owner and Patient database models with soft delete support ab252b8
 - [x] Task: Create Pydantic schemas for request/response validation ab0ccc6
