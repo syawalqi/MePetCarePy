@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+supabase
+python-dotenv
+pytest
+httpx
+pytest-cov
+sqlalchemy
