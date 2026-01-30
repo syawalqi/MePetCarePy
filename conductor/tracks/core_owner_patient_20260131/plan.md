@@ -10,9 +10,9 @@
 - [x] Task: Implement Owner CRUD endpoints f03d4a2
     - [x] Write Tests for Owner CRUD
     - [x] Implement Owner CRUD Logic
-- [ ] Task: Implement Patient CRUD endpoints (linked to Owners)
-    - [ ] Write Tests for Patient CRUD
-    - [ ] Implement Patient CRUD Logic
+- [x] Task: Implement Patient CRUD endpoints (linked to Owners) 5d63513
+    - [x] Write Tests for Patient CRUD
+    - [x] Implement Patient CRUD Logic
 - [ ] Task: Implement Search functionality (Owner/Patient)
     - [ ] Write Tests for Search
     - [ ] Implement Search Logic
