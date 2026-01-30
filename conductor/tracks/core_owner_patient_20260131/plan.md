@@ -19,7 +19,7 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Owner & Patient API Endpoints' (Protocol in workflow.md)
 
 ## Phase 3: Frontend Basics & Integration
-- [~] Task: Set up React project and API client
+- [x] Task: Set up React project and API client 5c2cb69
 - [ ] Task: Build Owner listing and registration forms
 - [ ] Task: Build Patient profile and management UI
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Frontend Basics & Integration' (Protocol in workflow.md)
