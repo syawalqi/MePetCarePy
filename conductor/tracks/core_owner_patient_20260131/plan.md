@@ -13,9 +13,9 @@
 - [x] Task: Implement Patient CRUD endpoints (linked to Owners) 5d63513
     - [x] Write Tests for Patient CRUD
     - [x] Implement Patient CRUD Logic
-- [ ] Task: Implement Search functionality (Owner/Patient)
-    - [ ] Write Tests for Search
-    - [ ] Implement Search Logic
+- [x] Task: Implement Search functionality (Owner/Patient) 83e695b
+    - [x] Write Tests for Search
+    - [x] Implement Search Logic
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Owner & Patient API Endpoints' (Protocol in workflow.md)
 
 ## Phase 3: Frontend Basics & Integration
