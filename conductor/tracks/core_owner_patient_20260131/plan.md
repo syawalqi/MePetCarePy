@@ -6,7 +6,7 @@
 - [x] Task: Create Pydantic schemas for request/response validation ab0ccc6
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Backend Foundation & Schema' (Protocol in workflow.md)
 
-## Phase 2: Owner & Patient API Endpoints
+## Phase 2: Owner & Patient API Endpoints [checkpoint: 52603bf]
 - [x] Task: Implement Owner CRUD endpoints f03d4a2
     - [x] Write Tests for Owner CRUD
     - [x] Implement Owner CRUD Logic
