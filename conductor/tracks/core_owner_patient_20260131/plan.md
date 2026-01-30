@@ -18,8 +18,8 @@
     - [x] Implement Search Logic
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Owner & Patient API Endpoints' (Protocol in workflow.md)
 
-## Phase 3: Frontend Basics & Integration
+## Phase 3: Frontend Basics & Integration [checkpoint: 5101ac4]
 - [x] Task: Set up React project and API client 5c2cb69
 - [x] Task: Build Owner listing and registration forms 03394e7
 - [x] Task: Build Patient profile and management UI e6bcc50
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Frontend Basics & Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Frontend Basics & Integration' (Protocol in workflow.md)
