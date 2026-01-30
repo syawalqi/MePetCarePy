@@ -3,7 +3,7 @@
 ## Phase 1: Backend Foundation & Schema
 - [x] Task: Set up FastAPI project structure and Supabase integration af570fe
 - [x] Task: Define Owner and Patient database models with soft delete support ab252b8
-- [ ] Task: Create Pydantic schemas for request/response validation
+- [x] Task: Create Pydantic schemas for request/response validation ab0ccc6
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Backend Foundation & Schema' (Protocol in workflow.md)
 
 ## Phase 2: Owner & Patient API Endpoints
