@@ -7,9 +7,9 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Backend Foundation & Schema' (Protocol in workflow.md)
 
 ## Phase 2: Owner & Patient API Endpoints
-- [ ] Task: Implement Owner CRUD endpoints
-    - [ ] Write Tests for Owner CRUD
-    - [ ] Implement Owner CRUD Logic
+- [x] Task: Implement Owner CRUD endpoints f03d4a2
+    - [x] Write Tests for Owner CRUD
+    - [x] Implement Owner CRUD Logic
 - [ ] Task: Implement Patient CRUD endpoints (linked to Owners)
     - [ ] Write Tests for Patient CRUD
     - [ ] Implement Patient CRUD Logic
