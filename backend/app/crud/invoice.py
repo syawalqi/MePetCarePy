@@ -42,9 +42,17 @@ def update_invoice_status(db: Session, invoice_id: int, status: str):
     db_invoice = get_invoice(db, invoice_id)
     if not db_invoice:
         return None
-    db_invoice.status = status
-    if status == "PAID":
+    
+    new_status = status.upper()
+    db_invoice.status = new_status
+    
+    # Only set paid_at if it's being marked as PAID and wasn't already paid
+    if new_status == "PAID" and not db_invoice.paid_at:
         db_invoice.paid_at = datetime.now(UTC)
+    elif new_status != "PAID":
+        # Clear paid_at if status is changed back to UNPAID/CANCELLED
+        db_invoice.paid_at = None
+        
     db.commit()
     db.refresh(db_invoice)
     return db_invoice

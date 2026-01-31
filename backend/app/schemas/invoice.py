@@ -18,17 +18,19 @@ class InvoiceItemRead(InvoiceItemBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+from typing import Optional, List, Literal
+
 # Invoice Schemas
 class InvoiceBase(BaseModel):
     patient_id: int
     medical_record_id: Optional[int] = None
-    status: str = "UNPAID" # UNPAID, PAID, CANCELLED
+    status: Literal["UNPAID", "PAID", "CANCELLED"] = "UNPAID"
 
 class InvoiceCreate(InvoiceBase):
     items: List[InvoiceItemCreate]
 
 class InvoiceUpdate(BaseModel):
-    status: Optional[str] = None
+    status: Literal["UNPAID", "PAID", "CANCELLED"]
     paid_at: Optional[datetime] = None
 
 class InvoiceRead(InvoiceBase):
