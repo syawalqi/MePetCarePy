@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { ownerService } from '../api/ownerService';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const OwnerList = () => {
   const [owners, setOwners] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { profile } = useAuth();
+
+  const isManagement = ['ADMINISTRATOR', 'SUPPORT_STAFF'].includes(profile?.role);
 
   useEffect(() => {
     loadOwners();
@@ -26,7 +30,9 @@ const OwnerList = () => {
   return (
     <div className="owner-list">
       <h2>Owners</h2>
-      <Link to="/owners/new" className="button">Register New Owner</Link>
+      {isManagement && (
+        <Link to="/owners/new" className="button">Register New Owner</Link>
+      )}
       <table>
         <thead>
           <tr>

@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ownerService } from '../api/ownerService';
+import { useAuth } from '../context/AuthContext';
 
 const OwnerDetails = () => {
   const { id } = useParams();
   const [owner, setOwner] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { profile } = useAuth();
+
+  const isManagement = ['ADMINISTRATOR', 'SUPPORT_STAFF'].includes(profile?.role);
+  const canViewRecords = ['ADMINISTRATOR', 'VETERINARIAN'].includes(profile?.role);
 
   useEffect(() => {
     loadOwner();
@@ -36,7 +41,9 @@ const OwnerDetails = () => {
       </div>
       
       <h3>Registered Pets</h3>
-      <Link to={`/patients/new?owner_id=${owner.id}`} className="button">Add New Pet</Link>
+      {isManagement && (
+        <Link to={`/patients/new?owner_id=${owner.id}`} className="button">Add New Pet</Link>
+      )}
       
       <div className="patient-grid">
         {owner.patients && owner.patients.length > 0 ? (
@@ -56,7 +63,11 @@ const OwnerDetails = () => {
                   <td>{patient.species}</td>
                   <td>{patient.breed}</td>
                   <td>
-                    <Link to={`/patients/${patient.id}`}>View Health Record</Link>
+                    {canViewRecords ? (
+                      <Link to={`/patients/${patient.id}`}>View Health Record</Link>
+                    ) : (
+                      <span>No permission to view record</span>
+                    )}
                   </td>
                 </tr>
               ))}
