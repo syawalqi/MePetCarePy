@@ -1,0 +1,64 @@
+import os
+import argparse
+import sys
+from supabase import create_client, Client
+from dotenv import load_dotenv
+
+# Load .env from the backend directory
+base_dir = os.path.dirname(os.path.abspath(__file__))
+env_path = os.path.join(base_dir, "backend", ".env")
+load_dotenv(env_path)
+
+url = os.getenv("SUPABASE_URL")
+key = os.getenv("SUPABASE_ANON_KEY")
+
+if not url or not key:
+    print(f"Error: SUPABASE_URL or SUPABASE_ANON_KEY not found in {env_path}")
+    sys.exit(1)
+
+supabase: Client = create_client(url, key)
+
+def create_admin(email, password, full_name):
+    print(f"Creating Auth user for {email}...")
+    try:
+        # 1. Create user in Supabase Auth
+        # The sign_up method expects a dictionary with 'email' and 'password'
+        auth_res = supabase.auth.sign_up({
+            "email": email,
+            "password": password,
+        })
+        
+        if not auth_res.user:
+            print("Signup failed. Result:")
+            print(auth_res)
+            return
+
+        user_id = auth_res.user.id
+        print(f"Auth user created! ID: {user_id}")
+
+        # 2. Create profile in public.profiles
+        print("Creating profile...")
+        profile_data = {
+            "id": user_id,
+            "full_name": full_name,
+            "email": email,
+            "role": "ADMINISTRATOR"
+        }
+        
+        # Insert into profiles table
+        res = supabase.table("profiles").insert(profile_data).execute()
+        print("Admin profile created successfully! You can now log in.")
+
+    except Exception as e:
+        print(f"Detailed Error: {e}")
+        if hasattr(e, 'message'):
+            print(f"Message: {e.message}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Seed an admin user for MePetCarePy")
+    parser.add_argument("--email", required=True, help="Admin email")
+    parser.add_argument("--password", required=True, help="Admin password")
+    parser.add_argument("--name", required=True, help="Admin full name")
+    
+    args = parser.parse_args()
+    create_admin(args.email, args.password, args.name)

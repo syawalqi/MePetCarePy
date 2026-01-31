@@ -40,13 +40,14 @@ test_patient_api.db
 .vscode/
 .idea/
 
-# Temporary migration/test scripts
-check_public_tables.py
-check_rls_status.py
-test_db_conn.py
-test_direct_psycopg2.py
-test_supabase_api.py
-migrate_profiles.py
-migrate_medical_records.py
-migrate_to_supabase.py
-# seed_admin.py  # I will keep this tracked as a utility, but without credentials
+# Diagnostic and Migration Scripts
+scripts/check_public_tables.py
+scripts/check_rls_status.py
+scripts/test_db_conn.py
+scripts/test_direct_psycopg2.py
+scripts/test_supabase_api.py
+scripts/migrate_profiles.py
+scripts/migrate_medical_records.py
+scripts/migrate_to_supabase.py
+scripts/get_token.py
+# scripts/seed_admin.py # Kept as tracked utility

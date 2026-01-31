@@ -13,7 +13,7 @@ def get_patient_history(db: Session, patient_id: int):
     return db.query(MedicalRecord).filter(
         MedicalRecord.patient_id == patient_id, 
         MedicalRecord.is_deleted == False
-    ).order_by(MedicalRecord.created_at.desc()).all()
+    ).order_by(MedicalRecord.created_at.desc(), MedicalRecord.id.desc()).all()
 
 def create_medical_record(db: Session, record: MedicalRecordCreate):
     db_record = MedicalRecord(**record.model_dump())
