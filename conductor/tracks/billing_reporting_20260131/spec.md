@@ -1,25 +1,26 @@
 # Specification: Billing, Invoicing, and Financial Reporting
 
 ## Goal
-To implement an internal financial workflow that links clinical treatments to front-desk payments and provides administrators with monthly earnings reports.
+To implement an internal financial workflow that supports manual price entry (Open Billing) for clinical services and medicines, providing a historical record of costs and monthly financial summaries for administrators.
 
 ## Requirements
-- **Invoicing System:**
-    - Create `invoices` table linked to `medical_records` and `patients`.
-    - Create `invoice_items` for granular billing (e.g., "Consultation - $50", "Antibiotics - $20").
-- **Clinical Integration:**
-    - Update the Medical Record flow so Veterinarians can list billable items during or after a SOAP session.
-- **Receptionist Workflow:**
-    - A "Pending Payments" view for Support Staff to see visits that haven't been paid.
+- **Invoicing System (Open Billing):**
+    - Create `invoices` table linked to `patients` and optionally `medical_records`.
+    - Create `invoice_items` for granular, manual billing.
+    - **No Inventory Dependency:** Staff will manually input the service/item name and cost.
+    - **Price Persistence:** Each line item must store `unit_price_at_billing` to ensure the historical record remains accurate even if standard prices change later.
+    - **No Tax:** Tax handling is not required.
+- **Support Staff Workflow:**
+    - UI to create new invoices manually.
     - Ability to mark invoices as `PAID`, `UNPAID`, or `CANCELLED`.
 - **Admin Reporting:**
     - A financial dashboard for Administrators.
-    - **Monthly Summary:** Total earnings, total patients seen, and breakdown of revenue per month.
-- **Internal-Only Security:**
-    - Ensure financial data is strictly internal. 
-    - RBAC: Vets/Admins can add items; Support/Admins can process payments; Admins only for full financial reports.
+    - **Monthly Summary:** Total earnings, total patients billed, and revenue breakdown per month.
+- **Security & RBAC:**
+    - Financial data is strictly internal. 
+    - RBAC: Vets/Admins/Support can create invoices; Support/Admins can process payments; Admins only for full financial reports.
 
 ## Technical Constraints
 - Backend: FastAPI with SQLAlchemy aggregation queries for reporting.
 - Database: Supabase PostgreSQL.
-- Frontend: React components for invoice management and simple chart/data summaries for Admin.
+- Frontend: React components for manual invoice entry and Admin dashboard.
