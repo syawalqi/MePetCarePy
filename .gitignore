@@ -47,5 +47,6 @@ test_db_conn.py
 test_direct_psycopg2.py
 test_supabase_api.py
 migrate_profiles.py
+migrate_medical_records.py
 migrate_to_supabase.py
 # seed_admin.py  # I will keep this tracked as a utility, but without credentials
