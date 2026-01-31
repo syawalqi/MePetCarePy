@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { medicalRecordService } from '../api/medicalRecordService';
+import { useAuth } from '../context/AuthContext';
 
 const PatientTimeline = ({ patientId }) => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { profile } = useAuth();
+
+  const isAdmin = profile?.role === 'ADMINISTRATOR';
 
   useEffect(() => {
     if (patientId) {
@@ -22,6 +26,21 @@ const PatientTimeline = ({ patientId }) => {
     }
   };
 
+  const handleDelete = async (recordId) => {
+    if (!window.confirm("Are you sure you want to delete this clinical record? This action will be logged and cannot be easily undone.")) {
+      return;
+    }
+
+    try {
+      await medicalRecordService.deleteRecord(recordId);
+      // Refresh the list locally
+      setRecords(records.filter(r => r.id !== recordId));
+    } catch (error) {
+      console.error("Error deleting record:", error);
+      alert("Failed to delete record. Only Administrators can perform this action.");
+    }
+  };
+
   if (loading) return <div>Loading history...</div>;
 
   return (
@@ -35,7 +54,18 @@ const PatientTimeline = ({ patientId }) => {
             <div key={record.id} className="record-card" style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '15px', borderRadius: '8px' }}>
               <div className="record-header" style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', marginBottom: '10px' }}>
                 <span className="record-date"><strong>Date:</strong> {new Date(record.created_at).toLocaleString()}</span>
-                <span className="record-id">#MR-{record.id}</span>
+                <div className="record-actions">
+                  <span className="record-id" style={{ marginRight: '10px' }}>#MR-{record.id}</span>
+                  {isAdmin && (
+                    <button 
+                      onClick={() => handleDelete(record.id)}
+                      style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer', padding: '0' }}
+                      title="Delete Record"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
               
               <div className="vitals-row" style={{ backgroundColor: '#f9f9f9', padding: '5px 10px', borderRadius: '4px', marginBottom: '10px', fontSize: '0.9em' }}>
