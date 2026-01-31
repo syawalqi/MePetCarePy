@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import owners, patients, users
+from app.api import owners, patients, users, medical_records
 from app.database import engine
 from app.models import Base
 
@@ -20,6 +20,7 @@ app.add_middleware(
 app.include_router(owners.router)
 app.include_router(patients.router)
 app.include_router(users.router)
+app.include_router(medical_records.router)
 
 @app.get("/")
 def read_root():
