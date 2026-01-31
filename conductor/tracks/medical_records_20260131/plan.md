@@ -3,7 +3,7 @@
 ## Phase 1: Backend Data Model & Schema
 - [x] Task: Define MedicalRecord database model with SOAP and Vital Sign fields 574687b
 - [x] Task: Create Pydantic schemas for medical record validation 77d80c0
-- [ ] Task: Migrate medical_records table to Supabase
+- [x] Task: Migrate medical_records table to Supabase d76b5aa
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Backend Data Model & Schema' (Protocol in workflow.md)
 
 ## Phase 2: Medical Records API
