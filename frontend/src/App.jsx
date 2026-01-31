@@ -6,6 +6,8 @@ import PatientList from './components/PatientList'
 import PatientForm from './components/PatientForm'
 import PatientDetails from './components/PatientDetails'
 import MedicalRecordForm from './components/MedicalRecordForm'
+import StaffList from './components/StaffList'
+import StaffForm from './components/StaffForm'
 import Login from './components/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -21,6 +23,9 @@ const Navigation = () => {
         <Link to="/">Home</Link> | 
         <Link to="/owners">Owners</Link> | 
         <Link to="/patients">Patients</Link>
+        {profile?.role === 'ADMINISTRATOR' && (
+          <> | <Link to="/staff">Staff Management</Link></>
+        )}
         {profile && (
           <span style={{ marginLeft: '20px' }}>
             {profile.full_name} ({profile.role}) 
@@ -59,6 +64,12 @@ function App() {
             {/* Protected Routes - Clinical Only */}
             <Route element={<ProtectedRoute allowedRoles={['ADMINISTRATOR', 'VETERINARIAN']} />}>
               <Route path="/patients/:id/records/new" element={<MedicalRecordForm />} />
+            </Route>
+
+            {/* Protected Routes - Admin Only */}
+            <Route element={<ProtectedRoute allowedRoles={['ADMINISTRATOR']} />}>
+              <Route path="/staff" element={<StaffList />} />
+              <Route path="/staff/new" element={<StaffForm />} />
             </Route>
           </Routes>
         </main>
