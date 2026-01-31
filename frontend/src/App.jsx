@@ -4,6 +4,8 @@ import OwnerForm from './components/OwnerForm'
 import OwnerDetails from './components/OwnerDetails'
 import PatientList from './components/PatientList'
 import PatientForm from './components/PatientForm'
+import PatientDetails from './components/PatientDetails'
+import MedicalRecordForm from './components/MedicalRecordForm'
 import Login from './components/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -45,12 +47,18 @@ function App() {
               <Route path="/owners" element={<OwnerList />} />
               <Route path="/owners/:id" element={<OwnerDetails />} />
               <Route path="/patients" element={<PatientList />} />
+              <Route path="/patients/:id" element={<PatientDetails />} />
             </Route>
 
             {/* Protected Routes - Management (Admin/Staff) */}
             <Route element={<ProtectedRoute allowedRoles={['ADMINISTRATOR', 'SUPPORT_STAFF']} />}>
               <Route path="/owners/new" element={<OwnerForm />} />
               <Route path="/patients/new" element={<PatientForm />} />
+            </Route>
+
+            {/* Protected Routes - Clinical Only */}
+            <Route element={<ProtectedRoute allowedRoles={['ADMINISTRATOR', 'VETERINARIAN']} />}>
+              <Route path="/patients/:id/records/new" element={<MedicalRecordForm />} />
             </Route>
           </Routes>
         </main>
