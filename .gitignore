@@ -48,6 +48,12 @@ scripts/test_direct_psycopg2.py
 scripts/test_supabase_api.py
 scripts/migrate_profiles.py
 scripts/migrate_medical_records.py
+scripts/migrate_billing.py
 scripts/migrate_to_supabase.py
 scripts/get_token.py
 # scripts/seed_admin.py # Kept as tracked utility
+
+
+
+#test
+note.txt
