@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Billing, Invoicing, and Monthly Financial Reporting**
-  *Link: [./tracks/billing_reporting_20260131/](./tracks/billing_reporting_20260131/)*
+- [x] **Track: Billing, Invoicing, and Monthly Financial Reporting**
+  *Link: [./archive/billing_reporting_20260131/](./archive/billing_reporting_20260131/)*
