@@ -3,14 +3,14 @@
 ## Backend
 *   **Framework:** Python FastAPI
 *   **Architecture:** REST API
-*   **Database:** Supabase (PostgreSQL). FastAPI may use either the Supabase Python client or SQLAlchemy with direct PostgreSQL access, but the approach must be consistent and not mixed arbitrarily.
+*   **Database:** Supabase PostgreSQL (via Transaction Pooler). Using SQLAlchemy for ORM and direct PostgreSQL access.
 *   **Authentication:** Supabase Auth (Role-based access control)
-*   **Key Libraries:** Pydantic (validation), Pytest (testing)
+*   **Key Libraries:** Pydantic (validation), Pytest (testing), psycopg2-binary, PyJWT
 
 ## Frontend
 *   **Framework:** React
 *   **State Management:** React Context API or similar lightweight solution (implied for small/medium app)
-*   **API Client:** Axios or Fetch API
+*   **API Client:** Axios, Supabase JavaScript Client
 *   **UI/Styling:** CSS Modules or Styled Components (aligned with custom design/Material reference)
 
 ## Infrastructure & DevOps

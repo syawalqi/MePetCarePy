@@ -34,7 +34,7 @@ To provide a structured, reliable, and extensible web-based management system fo
 ## Core Features (MVP)
 *   **Owner and Patient Management:** Comprehensive CRUD operations for managing pet owners and their animals.
 *   **Medical Records:** Tracking patient health history, including vaccinations, SOAP (Subjective, Objective, Assessment, Plan) notes, and full medical history.
-*   **Staff Management and RBAC:** Secure access control for clinic staff, ensuring data privacy and proper role delegation.
+*   **Authentication and RBAC:** Secure staff authentication via Supabase with role-based access control (Administrator, Veterinarian, Support Staff) to ensure data privacy and workflow integrity.
 *   **Appointment Management:** (Planned) Future support for scheduling and calendar integrations.
 
 ## Target Users
