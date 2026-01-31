@@ -14,3 +14,4 @@ class Patient(Base, TimestampMixin, SoftDeleteMixin):
     owner_id: Mapped[int] = mapped_column(Integer, ForeignKey("owners.id"))
 
     owner = relationship("Owner", back_populates="patients")
+    medical_records = relationship("MedicalRecord", back_populates="patient")
