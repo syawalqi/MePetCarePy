@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Medical Records and SOAP Notes System**
+- [x] **Track: Medical Records and SOAP Notes System**
   *Link: [./tracks/medical_records_20260131/](./tracks/medical_records_20260131/)*
