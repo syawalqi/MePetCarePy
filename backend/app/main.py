@@ -1,17 +1,45 @@
-from fastapi import FastAPI
+import os
+from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import owners, patients, users, medical_records
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+
+from app.api import owners, patients, users, medical_records, invoices
 from app.database import engine
 from app.models import Base
+from app.limiter import limiter, get_dynamic_limit
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="MePetCarePy API", version="0.1.0")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    # Refined CSP to allow Swagger UI to render while maintaining security
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+        "img-src 'self' data: https://fastapi.tiangolo.com; "
+        "frame-ancestors 'none';"
+    )
+    return response
+
+app.add_middleware(SlowAPIMiddleware)
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,7 +49,15 @@ app.include_router(owners.router)
 app.include_router(patients.router)
 app.include_router(users.router)
 app.include_router(medical_records.router)
+app.include_router(invoices.router)
+
+from app.dependencies import get_current_user, check_role
+from app.models.user import UserRole
+from app.limiter import limiter, get_dynamic_limit
+
+ALL_STAFF = [UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
 
 @app.get("/")
-def read_root():
+@limiter.limit(get_dynamic_limit)
+async def read_root(request: Request, _ = Depends(check_role(ALL_STAFF))):
     return {"message": "Welcome to MePetCarePy API"}
