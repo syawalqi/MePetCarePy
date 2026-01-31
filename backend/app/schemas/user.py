@@ -1,12 +1,15 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 from datetime import datetime
 from typing import Optional
 from app.models.user import UserRole
 
 class ProfileBase(BaseModel):
-    full_name: str
+    full_name: str = Field(..., min_length=2, max_length=100)
     role: UserRole
     email: EmailStr
+
+class StaffCreate(ProfileBase):
+    password: str
 
 class ProfileCreate(ProfileBase):
     id: str # The Supabase UID

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
+from datetime import datetime
 from app.database import get_db
 from app.schemas.invoice import InvoiceCreate, InvoiceRead, InvoiceUpdate
 from app.crud import invoice as crud_invoice
@@ -74,6 +75,11 @@ def update_status(
     )
     return db_invoice
 
+import io
+from fastapi.responses import StreamingResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+
 @router.get("/reports/monthly", status_code=status.HTTP_200_OK)
 def get_monthly_summary(
     year: int, 
@@ -82,3 +88,50 @@ def get_monthly_summary(
     _ = Depends(check_role([UserRole.ADMINISTRATOR]))
 ):
     return crud_invoice.get_monthly_report(db, year=year, month=month)
+
+@router.get("/reports/monthly/pdf")
+def export_monthly_report_pdf(
+    year: int, 
+    month: int, 
+    db: Session = Depends(get_db),
+    _ = Depends(check_role([UserRole.ADMINISTRATOR]))
+):
+    report = crud_invoice.get_monthly_report(db, year=year, month=month)
+    month_name = datetime(year, month, 1).strftime('%B')
+    
+    # Generate PDF in memory
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    
+    # Header
+    p.setFont("Helvetica-Bold", 20)
+    p.drawString(50, 750, "MePetCarePy Clinic")
+    p.setFont("Helvetica", 14)
+    p.drawString(50, 730, f"Monthly Financial Summary: {month_name} {year}")
+    p.line(50, 720, 550, 720)
+    
+    # Data
+    p.setFont("Helvetica", 12)
+    p.drawString(70, 680, f"Total Monthly Earnings:")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(250, 680, f"${report['total_earnings']:,.2f}")
+    
+    p.setFont("Helvetica", 12)
+    p.drawString(70, 650, f"Total Patients Billed:")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(250, 650, f"{report['total_patients']}")
+    
+    # Footer
+    p.setFont("Helvetica-Oblique", 10)
+    p.drawString(50, 50, f"Report generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    
+    p.showPage()
+    p.save()
+    
+    buffer.seek(0)
+    filename = f"Financial_Report_{year}_{month}.pdf"
+    return StreamingResponse(
+        buffer, 
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )

@@ -2,7 +2,7 @@ import pytest
 
 def test_create_medical_record(client):
     # 1. Create owner and patient first
-    owner_resp = client.post("/owners/", json={"full_name": "Owner 1", "phone_number": "123"})
+    owner_resp = client.post("/owners/", json={"full_name": "Owner One", "phone_number": "1234567890"})
     owner_id = owner_resp.json()["id"]
     patient_resp = client.post("/patients/", json={"name": "Buddy", "species": "Dog", "owner_id": owner_id})
     patient_id = patient_resp.json()["id"]
@@ -26,7 +26,7 @@ def test_create_medical_record(client):
     assert data["patient_id"] == patient_id
 
 def test_get_medical_records(client):
-    owner_resp = client.post("/owners/", json={"full_name": "Owner 1", "phone_number": "123"})
+    owner_resp = client.post("/owners/", json={"full_name": "Owner One", "phone_number": "1234567890"})
     owner_id = owner_resp.json()["id"]
     patient_resp = client.post("/patients/", json={"name": "Buddy", "species": "Dog", "owner_id": owner_id})
     patient_id = patient_resp.json()["id"]
@@ -38,7 +38,7 @@ def test_get_medical_records(client):
     assert len(response.json()) >= 1
 
 def test_get_medical_record_by_id(client):
-    owner_resp = client.post("/owners/", json={"full_name": "Owner 1", "phone_number": "123"})
+    owner_resp = client.post("/owners/", json={"full_name": "Owner One", "phone_number": "1234567890"})
     owner_id = owner_resp.json()["id"]
     patient_resp = client.post("/patients/", json={"name": "Buddy", "species": "Dog", "owner_id": owner_id})
     patient_id = patient_resp.json()["id"]
@@ -50,7 +50,7 @@ def test_get_medical_record_by_id(client):
     assert response.json()["subjective"] == "Detail Test"
 
 def test_update_medical_record(client):
-    owner_resp = client.post("/owners/", json={"full_name": "Owner 1", "phone_number": "123"})
+    owner_resp = client.post("/owners/", json={"full_name": "Owner One", "phone_number": "1234567890"})
     owner_id = owner_resp.json()["id"]
     patient_resp = client.post("/patients/", json={"name": "Buddy", "species": "Dog", "owner_id": owner_id})
     patient_id = patient_resp.json()["id"]
@@ -62,7 +62,7 @@ def test_update_medical_record(client):
     assert response.json()["subjective"] == "New"
 
 def test_delete_medical_record(client):
-    owner_resp = client.post("/owners/", json={"full_name": "Owner 1", "phone_number": "123"})
+    owner_resp = client.post("/owners/", json={"full_name": "Owner One", "phone_number": "1234567890"})
     owner_id = owner_resp.json()["id"]
     patient_resp = client.post("/patients/", json={"name": "Buddy", "species": "Dog", "owner_id": owner_id})
     patient_id = patient_resp.json()["id"]

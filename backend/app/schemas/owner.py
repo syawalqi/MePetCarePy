@@ -1,22 +1,25 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 from datetime import datetime
 from typing import Optional, List
 from .patient import PatientRead
 
+# Regex for phone number: allows optional +, then 7-15 digits
+PHONE_REGEX = r"^\+?[0-9]{7,15}$"
+
 class OwnerBase(BaseModel):
-    full_name: str
+    full_name: str = Field(..., min_length=2, max_length=100)
     email: Optional[EmailStr] = None
-    phone_number: str
-    address: Optional[str] = None
+    phone_number: str = Field(..., pattern=PHONE_REGEX)
+    address: Optional[str] = Field(None, max_length=500)
 
 class OwnerCreate(OwnerBase):
     pass
 
 class OwnerUpdate(BaseModel):
-    full_name: Optional[str] = None
+    full_name: Optional[str] = Field(None, min_length=2, max_length=100)
     email: Optional[EmailStr] = None
-    phone_number: Optional[str] = None
-    address: Optional[str] = None
+    phone_number: Optional[str] = Field(None, pattern=PHONE_REGEX)
+    address: Optional[str] = Field(None, max_length=500)
 
 class OwnerRead(OwnerBase):
     id: int

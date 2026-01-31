@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { patientService } from '../api/patientService';
 import PatientTimeline from './PatientTimeline';
+import InvoiceForm from './InvoiceForm';
+import InvoiceList from './InvoiceList';
 import { useAuth } from '../context/AuthContext';
 
 const PatientDetails = () => {
   const { id } = useParams();
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showInvoiceForm, setShowInvoiceForm] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0); // To force refresh InvoiceList
   const { profile } = useAuth();
 
   const canEdit = ['ADMINISTRATOR', 'VETERINARIAN'].includes(profile?.role);
@@ -47,6 +51,30 @@ const PatientDetails = () => {
         <p><strong>Date of Birth:</strong> {patient.date_of_birth || 'Not recorded'}</p>
         <p><strong>Owner:</strong> <Link to={`/owners/${patient.owner_id}`}>View Owner Profile</Link></p>
       </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <button 
+          onClick={() => setShowInvoiceForm(!showInvoiceForm)}
+          className="button"
+          style={{ backgroundColor: showInvoiceForm ? '#6c757d' : '#28a745' }}
+        >
+          {showInvoiceForm ? "Close Invoice Form" : "Create New Invoice"}
+        </button>
+      </div>
+
+      {showInvoiceForm && (
+        <div style={{ marginBottom: '30px' }}>
+          <InvoiceForm 
+            patientId={id} 
+            onSuccess={() => {
+              setShowInvoiceForm(false);
+              setRefreshKey(old => old + 1); // Trigger list refresh
+            }} 
+          />
+        </div>
+      )}
+
+      <InvoiceList key={refreshKey} patientId={id} />
 
       <PatientTimeline patientId={id} />
       

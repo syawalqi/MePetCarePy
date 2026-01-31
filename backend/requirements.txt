@@ -9,3 +9,4 @@ pytest-cov
 sqlalchemy
 email-validator
 psycopg2-binary
+slowapi

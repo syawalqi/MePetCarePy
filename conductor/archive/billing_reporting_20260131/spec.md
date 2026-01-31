@@ -16,6 +16,7 @@ To implement an internal financial workflow that supports manual price entry (Op
 - **Admin Reporting:**
     - A financial dashboard for Administrators.
     - **Monthly Summary:** Total earnings, total patients billed, and revenue breakdown per month.
+    - **PDF Export:** Ability to download a PDF summary of the monthly financial report for record-keeping.
 - **Security & RBAC:**
     - Financial data is strictly internal. 
     - RBAC: Vets/Admins/Support can create invoices; Support/Admins can process payments; Admins only for full financial reports.

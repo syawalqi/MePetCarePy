@@ -2,7 +2,7 @@ import pytest
 
 def test_get_patient_history(client):
     # 1. Setup: Create Owner and Patient
-    owner_resp = client.post("/owners/", json={"full_name": "History Owner", "phone_number": "555"})
+    owner_resp = client.post("/owners/", json={"full_name": "History Owner", "phone_number": "5556667778"})
     owner_id = owner_resp.json()["id"]
     patient_resp = client.post("/patients/", json={"name": "TimelinePet", "species": "Dog", "owner_id": owner_id})
     patient_id = patient_resp.json()["id"]

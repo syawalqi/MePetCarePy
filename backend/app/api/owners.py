@@ -6,6 +6,7 @@ from app.schemas.owner import OwnerCreate, OwnerRead, OwnerUpdate
 from app.crud import owner as crud_owner
 from app.dependencies import check_role
 from app.models.user import UserRole
+from app.logger import log_action
 
 router = APIRouter(prefix="/owners", tags=["owners"])
 
@@ -18,9 +19,18 @@ ADMIN_ONLY = [UserRole.ADMINISTRATOR]
 def create_owner(
     owner: OwnerCreate, 
     db: Session = Depends(get_db),
-    _ = Depends(check_role(MANAGEMENT))
+    current_profile = Depends(check_role(MANAGEMENT))
 ):
-    return crud_owner.create_owner(db, owner)
+    db_owner = crud_owner.create_owner(db, owner)
+    log_action(
+        user_id=current_profile.id,
+        role=current_profile.role,
+        action="CREATE",
+        entity="OWNER",
+        entity_id=str(db_owner.id),
+        data=owner.model_dump()
+    )
+    return db_owner
 
 @router.get("/", response_model=List[OwnerRead])
 def read_owners(
@@ -55,20 +65,37 @@ def update_owner(
     owner_id: int, 
     owner: OwnerUpdate, 
     db: Session = Depends(get_db),
-    _ = Depends(check_role(MANAGEMENT))
+    current_profile = Depends(check_role(MANAGEMENT))
 ):
     db_owner = crud_owner.update_owner(db, owner_id, owner)
     if db_owner is None:
         raise HTTPException(status_code=404, detail="Owner not found")
+    
+    log_action(
+        user_id=current_profile.id,
+        role=current_profile.role,
+        action="UPDATE",
+        entity="OWNER",
+        entity_id=str(owner_id),
+        data=owner.model_dump(exclude_unset=True)
+    )
     return db_owner
 
 @router.delete("/{owner_id}", response_model=OwnerRead)
 def delete_owner(
     owner_id: int, 
     db: Session = Depends(get_db),
-    _ = Depends(check_role(ADMIN_ONLY))
+    current_profile = Depends(check_role(ADMIN_ONLY))
 ):
     db_owner = crud_owner.delete_owner(db, owner_id)
     if db_owner is None:
         raise HTTPException(status_code=404, detail="Owner not found")
+    
+    log_action(
+        user_id=current_profile.id,
+        role=current_profile.role,
+        action="DELETE",
+        entity="OWNER",
+        entity_id=str(owner_id)
+    )
     return db_owner

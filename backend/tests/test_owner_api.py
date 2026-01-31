@@ -6,7 +6,7 @@ def test_create_owner(client):
         json={
             "full_name": "John Doe",
             "email": "john@example.com",
-            "phone_number": "123456789",
+            "phone_number": "1234567890",
             "address": "123 Pet St"
         }
     )
@@ -20,8 +20,8 @@ def test_get_owners(client):
     client.post(
         "/owners/",
         json={
-            "full_name": "Owner 1",
-            "phone_number": "111"
+            "full_name": "Owner One",
+            "phone_number": "1112223334"
         }
     )
     response = client.get("/owners/")
@@ -34,7 +34,7 @@ def test_get_owner_by_id(client):
         "/owners/",
         json={
             "full_name": "Jane Doe",
-            "phone_number": "987654321"
+            "phone_number": "9876543210"
         }
     )
     owner_id = create_response.json()["id"]
@@ -48,7 +48,7 @@ def test_update_owner(client):
         "/owners/",
         json={
             "full_name": "Old Name",
-            "phone_number": "000"
+            "phone_number": "0001112223"
         }
     )
     owner_id = create_response.json()["id"]
@@ -65,7 +65,7 @@ def test_delete_owner(client):
         "/owners/",
         json={
             "full_name": "Delete Me",
-            "phone_number": "111"
+            "phone_number": "1112223334"
         }
     )
     owner_id = create_response.json()["id"]

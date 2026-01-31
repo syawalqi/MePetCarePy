@@ -6,6 +6,7 @@ from app.schemas.medical_record import MedicalRecordCreate, MedicalRecordRead, M
 from app.crud import medical_record as crud_mr
 from app.dependencies import check_role
 from app.models.user import UserRole
+from app.logger import log_action
 
 router = APIRouter(prefix="/medical-records", tags=["medical-records"])
 
@@ -17,9 +18,18 @@ ALL_STAFF = [UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STA
 def create_medical_record(
     record: MedicalRecordCreate, 
     db: Session = Depends(get_db),
-    _ = Depends(check_role(CLINICAL_STAFF))
+    current_profile = Depends(check_role(CLINICAL_STAFF))
 ):
-    return crud_mr.create_medical_record(db, record)
+    db_record = crud_mr.create_medical_record(db, record)
+    log_action(
+        user_id=current_profile.id,
+        role=current_profile.role,
+        action="CREATE",
+        entity="MEDICAL_RECORD",
+        entity_id=str(db_record.id),
+        data=record.model_dump()
+    )
+    return db_record
 
 @router.get("/", response_model=List[MedicalRecordRead])
 def read_medical_records(
@@ -54,20 +64,37 @@ def update_medical_record(
     record_id: int, 
     record: MedicalRecordUpdate, 
     db: Session = Depends(get_db),
-    _ = Depends(check_role(CLINICAL_STAFF))
+    current_profile = Depends(check_role(CLINICAL_STAFF))
 ):
     db_record = crud_mr.update_medical_record(db, record_id, record)
     if db_record is None:
         raise HTTPException(status_code=404, detail="Medical record not found")
+    
+    log_action(
+        user_id=current_profile.id,
+        role=current_profile.role,
+        action="UPDATE",
+        entity="MEDICAL_RECORD",
+        entity_id=str(record_id),
+        data=record.model_dump(exclude_unset=True)
+    )
     return db_record
 
 @router.delete("/{record_id}", response_model=MedicalRecordRead)
 def delete_medical_record(
     record_id: int, 
     db: Session = Depends(get_db),
-    _ = Depends(check_role([UserRole.ADMINISTRATOR]))
+    current_profile = Depends(check_role([UserRole.ADMINISTRATOR]))
 ):
     db_record = crud_mr.delete_medical_record(db, record_id)
     if db_record is None:
         raise HTTPException(status_code=404, detail="Medical record not found")
+    
+    log_action(
+        user_id=current_profile.id,
+        role=current_profile.role,
+        action="DELETE",
+        entity="MEDICAL_RECORD",
+        entity_id=str(record_id)
+    )
     return db_record
