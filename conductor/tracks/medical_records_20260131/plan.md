@@ -1,7 +1,7 @@
 # Implementation Plan: Medical Records and SOAP Notes System
 
 ## Phase 1: Backend Data Model & Schema
-- [ ] Task: Define MedicalRecord database model with SOAP and Vital Sign fields
+- [x] Task: Define MedicalRecord database model with SOAP and Vital Sign fields 574687b
 - [ ] Task: Create Pydantic schemas for medical record validation
 - [ ] Task: Migrate medical_records table to Supabase
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Backend Data Model & Schema' (Protocol in workflow.md)
