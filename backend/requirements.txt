@@ -10,3 +10,5 @@ sqlalchemy
 email-validator
 psycopg2-binary
 slowapi
+gunicorn
+uvicorn[standard]
