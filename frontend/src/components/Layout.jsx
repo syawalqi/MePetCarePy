@@ -1,143 +1,136 @@
 import React, { useState } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { 
-  Home, 
-  Users, 
-  PawPrint, 
-  UserCog, 
-  BarChart3, 
-  LogOut,
-  Menu,
-  X
-} from 'lucide-react';
-
-const Layout = () => {
+import {
+  Home,
+  Users,
+  PawPrint,
+  UserCog,
+    BarChart3, 
+    LogOut,
+    Menu,
+    X,
+    PlusCircle
+  } from 'lucide-react';
+  const Layout = () => {
   const { profile, logout, deferredPrompt, handleInstallClick } = useAuth();
   const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Helper check for iOS PWA prompt
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+  // Localized Menu Items (Bahasa Indonesia)
   const menuItems = [
-    { name: 'Home', path: '/', icon: <Home size={20} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
-    { name: 'Owners', path: '/owners', icon: <Users size={20} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
-    { name: 'Patients', path: '/patients', icon: <PawPrint size={20} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
-    { name: 'Staff', path: '/staff', icon: <UserCog size={20} />, roles: ['ADMINISTRATOR'] },
-    { name: 'Financial Reports', path: '/reports', icon: <BarChart3 size={20} />, roles: ['ADMINISTRATOR'] },
+    { name: 'Beranda', path: '/', icon: <Home size={24} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
+    { name: 'Pemilik', path: '/owners', icon: <Users size={24} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
+    { name: 'Pasien', path: '/patients', icon: <PawPrint size={24} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
+    { name: 'Staf', path: '/staff', icon: <UserCog size={24} />, roles: ['ADMINISTRATOR'] },
+    { name: 'Keuangan', path: '/reports', icon: <BarChart3 size={24} />, roles: ['ADMINISTRATOR'] },
   ];
 
   const filteredMenu = menuItems.filter(item => item.roles.includes(profile?.role));
 
   if (!profile) return <Outlet />;
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-  const closeSidebar = () => setIsSidebarOpen(false);
-
+  // Components
   const SidebarContent = () => (
-    <div className="position-sticky pt-3 h-100 d-flex flex-column">
-      <div className="px-4 mb-4 d-flex justify-content-between align-items-center">
-        <div>
-          <h4 className="text-primary fw-bold mb-0">MePetCare</h4>
-          <small className="text-muted">{profile.role}</small>
-        </div>
-        <button className="btn d-md-none p-0" onClick={closeSidebar}>
-          <X size={24} />
-        </button>
+    <div className="position-sticky pt-4 h-100 d-flex flex-column bg-white shadow-sm border-end">
+      <div className="px-4 mb-4">
+        <h4 className="text-primary fw-bold mb-0">MePetCare</h4>
+        <small className="text-muted fw-medium">{profile.role}</small>
       </div>
-      
-      <ul className="nav flex-column px-3">
+
+      <ul className="nav flex-column px-3 gap-1">
         {filteredMenu.map((item) => (
-          <li className="nav-item mb-1" key={item.path}>
-            <Link 
-              to={item.path} 
-              onClick={closeSidebar}
-              className={`nav-link d-flex align-items-center gap-3 py-2 px-3 rounded ${
-                location.pathname === item.path ? 'active bg-primary text-white shadow-sm' : 'text-dark'
-              }`}
+          <li className="nav-item" key={item.path}>
+            <Link
+              to={item.path}
+              className={`nav-link d-flex align-items-center gap-3 py-3 px-3 rounded ${location.pathname === item.path ? 'active shadow-sm' : ''
+                }`}
             >
-              {item.icon}
+              {React.cloneElement(item.icon, { size: 20 })}
               <span>{item.name}</span>
             </Link>
           </li>
         ))}
       </ul>
 
-      <hr className="mx-3 mt-4" />
-      
       <div className="px-3 mt-auto mb-4">
-        {/* PWA Install Button */}
-        {deferredPrompt && (
-          <button 
-            onClick={handleInstallClick} 
-            className="btn btn-success btn-sm w-100 d-flex align-items-center justify-content-center gap-2 mb-3 shadow-sm"
-          >
-            <PlusCircle size={16} />
-            <span>Install App</span>
-          </button>
-        )}
-
-        {isIOS && !deferredPrompt && (
-          <div className="p-2 bg-info bg-opacity-10 rounded x-small text-center mb-3 border border-info border-opacity-25">
-            <small className="text-info-emphasis">To install: Tap share and "Add to Home Screen"</small>
-          </div>
-        )}
-
-        <div className="p-3 bg-light rounded small mb-3">
-          <div className="fw-bold text-truncate">{profile.full_name}</div>
-          <div className="text-muted text-truncate">{profile.email}</div>
+        <div className="p-3 bg-light rounded mb-3 border">
+          <div className="fw-bold text-truncate text-dark">{profile.full_name}</div>
+          <div className="text-muted text-truncate small">{profile.email}</div>
         </div>
-        <button 
-          onClick={logout} 
-          className="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
+        <button
+          onClick={logout}
+          className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2"
         >
-          <LogOut size={16} />
-          <span>Logout</span>
+          <LogOut size={18} />
+          <span>Keluar</span>
         </button>
       </div>
     </div>
   );
 
+  const BottomNav = () => (
+    <nav className="bottom-nav d-md-none d-flex justify-content-around align-items-center px-2">
+      {filteredMenu.slice(0, 5).map((item) => ( // Limit to 5 items for mobile spacing
+        <Link
+          key={item.path}
+          to={item.path}
+          className={`bottom-nav-item d-flex flex-column align-items-center text-decoration-none ${location.pathname === item.path ? 'active' : ''
+            }`}
+        >
+          {React.cloneElement(item.icon, { size: 24, strokeWidth: location.pathname === item.path ? 2.5 : 2 })}
+          <span className="mt-1" style={{ fontSize: '0.7rem' }}>{item.name}</span>
+        </Link>
+      ))}
+    </nav>
+  );
+
   return (
     <div className="container-fluid p-0">
-      {/* Mobile Header */}
-      <header className="navbar sticky-top bg-white shadow-sm d-md-none px-3 py-2">
-        <button className="navbar-toggler border-0 p-0" type="button" onClick={toggleSidebar}>
-          <Menu size={24} />
-        </button>
-        <span className="navbar-brand fw-bold text-primary m-0">MePetCare</span>
-        <div style={{ width: 24 }}></div> {/* Spacer */}
-      </header>
-
       <div className="row g-0">
+
         {/* Desktop Sidebar */}
-        <nav className="col-md-3 col-lg-2 d-none d-md-block bg-white sidebar border-end min-vh-100 p-0">
+        <nav className="col-md-3 col-lg-2 d-none d-md-block sidebar p-0">
           <SidebarContent />
         </nav>
 
-        {/* Mobile Sidebar (Offcanvas Simulation) */}
-        {isSidebarOpen && (
-          <>
-            <div 
-              className="position-fixed top-0 start-0 w-100 h-100 bg-dark opacity-50 z-3 d-md-none" 
-              onClick={closeSidebar}
-            ></div>
-            <nav 
-              className="position-fixed top-0 start-0 h-100 bg-white z-3 shadow-lg d-md-none animate-slide-in"
-              style={{ width: '280px' }}
-            >
-              <SidebarContent />
-            </nav>
-          </>
-        )}
+        {/* Main Content Area */}
+        <main className="col-md-9 ms-sm-auto col-lg-10 app-main">
 
-        {/* Main Content */}
-        <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content flex-grow-1">
-          <div className="container-fluid py-4">
+          {/* PWA Install Prompt (Mobile Top) */}
+          {deferredPrompt && (
+            <div className="d-md-none px-3 pt-3">
+              <button
+                onClick={handleInstallClick}
+                className="btn btn-success w-100 shadow-sm d-flex align-items-center justify-content-center gap-2"
+              >
+                <PlusCircle size={18} />
+                <span>Instal Aplikasi</span>
+              </button>
+            </div>
+          )}
+
+          {/* iOS Instructions */}
+          {isIOS && !deferredPrompt && (
+            <div className="d-md-none px-3 pt-3">
+              <div className="alert alert-info py-2 small mb-0 text-center">
+                Tap share &amp; "Add to Home Screen"
+              </div>
+            </div>
+          )}
+
+          <div className="container-fluid py-2 px-0 px-md-3">
             <Outlet />
           </div>
+
+          <div className="mobile-bottom-spacer d-md-none"></div>
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 };

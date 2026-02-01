@@ -29,67 +29,76 @@ const Login = () => {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
-      <div className="card shadow-lg border-0" style={{ maxWidth: '400px', width: '100%', borderRadius: '15px' }}>
-        <div className="card-body p-5">
-          <div className="text-center mb-4">
-            <div className="bg-primary d-inline-flex p-3 rounded-circle text-white mb-3 shadow">
+    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-white bg-md-light">
+      {/* Full white background on mobile, light gray on desktop */}
+      <div className="card shadow-lg border-0 w-100" style={{ maxWidth: '400px', borderRadius: '1rem' }}>
+        <div className="card-body p-4 p-md-5">
+          <div className="text-center mb-5">
+            <div className="bg-primary d-inline-flex p-3 rounded-circle text-white mb-3 shadow-sm">
               <Activity size={32} />
             </div>
-            <h2 className="fw-bold">MePetCare</h2>
-            <p className="text-muted">Clinic Internal Management</p>
+            <h2 className="fw-bold mb-1">MePetCare</h2>
+            <p className="text-muted small">Sistem Manajemen Klinik Hewan</p>
           </div>
 
           {error && <div className="alert alert-danger small mb-4">{error}</div>}
-          
+
           <form onSubmit={handleLogin}>
-            <div className="mb-3">
-              <label className="form-label small fw-bold uppercase">Email Address</label>
-              <div className="input-group shadow-sm border rounded">
-                <span className="input-group-text bg-white border-0">
-                  <Mail size={18} className="text-muted" />
-                </span>
-                <input 
-                  type="email" 
-                  className="form-control border-0 py-2 shadow-none"
-                  placeholder="name@clinic.com"
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
-                  required 
-                />
-              </div>
-            </div>
-
             <div className="mb-4">
-              <label className="form-label small fw-bold uppercase">Password</label>
-              <div className="input-group shadow-sm border rounded">
-                <span className="input-group-text bg-white border-0">
-                  <Lock size={18} className="text-muted" />
+              <label className="form-label small fw-bold text-uppercase text-secondary" style={{ fontSize: '0.75rem' }}>Alamat Email</label>
+              <div className="input-group input-group-lg shadow-sm border rounded overflow-hidden">
+                <span className="input-group-text bg-white border-0 ps-3">
+                  <Mail size={20} className="text-muted" />
                 </span>
-                <input 
-                  type="password" 
-                  className="form-control border-0 py-2 shadow-none"
-                  placeholder="••••••••"
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
-                  required 
+                <input
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  className="form-control border-0 shadow-none ps-2"
+                  placeholder="nama@klinik.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              className="btn btn-primary w-100 py-2 shadow-sm fw-bold" 
+            <div className="mb-5">
+              <label className="form-label small fw-bold text-uppercase text-secondary" style={{ fontSize: '0.75rem' }}>Kata Sandi</label>
+              <div className="input-group input-group-lg shadow-sm border rounded overflow-hidden">
+                <span className="input-group-text bg-white border-0 ps-3">
+                  <Lock size={20} className="text-muted" />
+                </span>
+                <input
+                  type="password"
+                  autoComplete="current-password"
+                  className="form-control border-0 shadow-none ps-2"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary btn-lg w-100 py-3 fw-bold shadow-sm"
               disabled={loading}
             >
               {loading ? (
                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-              ) : 'Sign In'}
+              ) : 'Masuk'}
             </button>
           </form>
-          
-          <div className="text-center mt-4">
-            <small className="text-muted">For authorized clinical staff only.</small>
+
+          <div className="text-center mt-5">
+            <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>
+              &copy; {new Date().getFullYear()} MePetCarePy
+            </small>
+            <small className="text-muted" style={{ fontSize: '0.7rem' }}>
+              Khusus Staf Terdaftar
+            </small>
           </div>
         </div>
       </div>
