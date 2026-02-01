@@ -1,4 +1,5 @@
 # Workflow for building and deploying a Vite React app to GitHub Pages
+# Triggered at: 2026-02-01 18:45 (Clean deployment)
 name: Deploy static content to Pages
 
 on:
