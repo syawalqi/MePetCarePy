@@ -3,6 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ master ]
+    # Only trigger build if files in the frontend directory change
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy.yml'
 
 permissions:
   contents: write
@@ -28,19 +32,18 @@ jobs:
 
       - name: Build
         env:
-          # Inject Secrets from GitHub Settings
+          # Strictly pulling from GitHub Secrets
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          # Hardcode your Railway URL here (or use a secret VITE_API_URL)
-          VITE_API_URL: "https://mepetcarepy-production.up.railway.app"
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
           cd frontend
           npm run build
           
-          # FIX 1: Disable Jekyll to allow underscore folders
+          # Disable Jekyll processing
           touch dist/.nojekyll
           
-          # FIX 2: Create 404.html for SPA routing support
+          # Support for SPA routing on GitHub Pages
           cp dist/index.html dist/404.html
 
       - name: Deploy
