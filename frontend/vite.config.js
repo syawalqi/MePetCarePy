@@ -13,7 +13,10 @@ export default defineConfig({
         name: 'MePetCarePy Clinic',
         short_name: 'MePetCare',
         description: 'Animal Clinic Management System',
-        theme_color: '#0d6efd',
+        theme_color: '#0284c7',
+        background_color: '#f8f9fa',
+        display: 'standalone',
+        orientation: 'portrait',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -36,5 +39,5 @@ export default defineConfig({
     })
   ],
   // Use relative base path - safest for GitHub Pages with HashRouter
-  base: './', 
+  base: './',
 })
