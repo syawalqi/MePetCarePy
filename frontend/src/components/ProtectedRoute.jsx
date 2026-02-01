@@ -1,10 +1,16 @@
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LoadingScreen from './LoadingScreen';
 
 const ProtectedRoute = ({ allowedRoles }) => {
-  const { profile, loading, session } = useAuth();
+  const { session, profile, loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+    <div className="vh-100 d-flex align-items-center bg-light">
+      <LoadingScreen message="Memverifikasi akses..." />
+    </div>
+  );
 
   if (!session) {
     return <Navigate to="/login" replace />;

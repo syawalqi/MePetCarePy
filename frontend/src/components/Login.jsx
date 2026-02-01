@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from '../api/supabase';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, Activity } from 'lucide-react';
+import LoadingScreen from './LoadingScreen';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -22,11 +23,18 @@ const Login = () => {
 
     if (error) {
       setError(error.message);
+      setLoading(false);
     } else {
+      // The ProtectedRoute will show the LoadingScreen while profile is being fetched
       navigate('/');
     }
-    setLoading(false);
   };
+
+  if (loading && !error) return (
+    <div className="vh-100 d-flex align-items-center bg-white">
+      <LoadingScreen message="Masuk ke sistem..." />
+    </div>
+  );
 
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-white bg-md-light">

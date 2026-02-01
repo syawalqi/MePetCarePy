@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { userService } from '../api/userService';
 import { Link } from 'react-router-dom';
+import LoadingScreen from './LoadingScreen';
 import {
   Users,
   UserPlus,
@@ -50,12 +51,7 @@ const StaffList = () => {
     }
   };
 
-  if (loading) return (
-    <div className="text-center py-5">
-      <div className="spinner-border text-primary" role="status"></div>
-      <p className="mt-2 text-muted">Memuat data staf...</p>
-    </div>
-  );
+  if (loading) return <LoadingScreen message="Menghubungi server staf..." />;
 
   return (
     <div className="container-fluid pb-5">

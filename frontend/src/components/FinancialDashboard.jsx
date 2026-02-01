@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { invoiceService } from '../api/invoiceService';
 import { useAuth } from '../context/AuthContext';
+import { BarChart3, Download, Calendar as CalendarIcon, Users } from 'lucide-react';
 
 const FinancialDashboard = () => {
   const { profile } = useAuth();
@@ -37,77 +38,116 @@ const FinancialDashboard = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `Financial_Report_${date.year}_${date.month}.pdf`);
+      link.setAttribute('download', `Laporan_Keuangan_${date.year}_${date.month}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (error) {
-      alert("Failed to download PDF report");
+      alert("Gagal mengunduh laporan PDF.");
     }
   };
 
-  if (!isAdmin) return <div className="alert alert-warning">Access Denied: Administrator role required.</div>;
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+  };
+
+  if (!isAdmin) return (
+    <div className="container py-5 text-center">
+      <div className="alert alert-warning d-inline-block">Akses Ditolak: Diperlukan peran Administrator.</div>
+    </div>
+  );
 
   return (
-    <div className="financial-dashboard mt-4">
-      <div className="card shadow-sm p-4 bg-light border-0">
-        <h2 className="mb-4 text-primary">Financial Summary</h2>
-        
-        <div className="row mb-4 align-items-end">
-          <div className="col-md-3">
-            <label className="form-label fw-bold small uppercase">Year</label>
-            <select 
-              className="form-select" 
-              value={date.year} 
-              onChange={(e) => setDate({...date, year: parseInt(e.target.value)})}
-            >
-              {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
-            </select>
-          </div>
-          <div className="col-md-3">
-            <label className="form-label fw-bold small uppercase">Month</label>
-            <select 
-              className="form-select" 
-              value={date.month} 
-              onChange={(e) => setDate({...date, month: parseInt(e.target.value)})}
-            >
-              {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-                <option key={m} value={m}>{new Date(0, m-1).toLocaleString('default', { month: 'long' })}</option>
-              ))}
-            </select>
+    <div className="container-fluid pb-5">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 className="fw-bold mb-1">Ringkasan Keuangan</h2>
+          <p className="text-muted small mb-0">Pantau pendapatan dan statistik pasien bulanan</p>
+        </div>
+        <div className="bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
+          <BarChart3 size={28} />
+        </div>
+      </div>
+
+      <div className="card shadow-sm border-0 mb-4 bg-white">
+        <div className="card-body p-4">
+          <div className="row g-3 align-items-end">
+            <div className="col-md-4">
+              <label className="form-label small fw-bold text-uppercase text-muted">Tahun</label>
+              <div className="input-group">
+                <span className="input-group-text bg-light border-0"><CalendarIcon size={16} /></span>
+                <select 
+                  className="form-select bg-light border-0 fw-medium" 
+                  value={date.year} 
+                  onChange={(e) => setDate({...date, year: parseInt(e.target.value)})}
+                >
+                  {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <label className="form-label small fw-bold text-uppercase text-muted">Bulan</label>
+              <div className="input-group">
+                <span className="input-group-text bg-light border-0"><CalendarIcon size={16} /></span>
+                <select 
+                  className="form-select bg-light border-0 fw-medium" 
+                  value={date.month} 
+                  onChange={(e) => setDate({...date, month: parseInt(e.target.value)})}
+                >
+                  {Array.from({length: 12}, (_, i) => i + 1).map(m => (
+                    <option key={m} value={m}>{new Date(0, m-1).toLocaleString('id-ID', { month: 'long' })}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
         </div>
-
-        {loading ? (
-          <div className="text-center py-5">
-            <div className="spinner-border text-primary" role="status"></div>
-            <p className="mt-2 text-muted">Calculating monthly reports...</p>
-          </div>
-        ) : stats && (
-          <>
-            <div className="row g-4 mb-4">
-              <div className="col-md-6">
-                <div className="card h-100 border-0 shadow-sm text-center p-4" style={{ backgroundColor: '#e7f3ff' }}>
-                  <h6 className="text-muted text-uppercase mb-2">Total Monthly Earnings</h6>
-                  <div className="display-5 fw-bold text-dark">${stats.total_earnings.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <div className="card h-100 border-0 shadow-sm text-center p-4" style={{ backgroundColor: '#f0fdf4' }}>
-                  <h6 className="text-muted text-uppercase mb-2">Unique Patients Billed</h6>
-                  <div className="display-5 fw-bold text-dark">{stats.total_patients}</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="text-end">
-              <button onClick={handleDownloadPDF} className="btn btn-outline-primary shadow-sm">
-                <span className="me-2">📥</span> Download PDF Report
-              </button>
-            </div>
-          </>
-        )}
       </div>
+
+      {loading ? (
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status"></div>
+          <p className="mt-3 text-muted fw-medium">Menghitung laporan bulanan...</p>
+        </div>
+      ) : stats && (
+        <>
+          <div className="row g-4 mb-4">
+            <div className="col-md-6">
+              <div className="card h-100 border-0 shadow-sm bg-primary text-white overflow-hidden">
+                <div className="card-body p-4 position-relative">
+                  <div className="position-absolute end-0 top-0 opacity-10 me-n3 mt-n3">
+                    <BarChart3 size={120} />
+                  </div>
+                  <h6 className="text-white text-opacity-75 text-uppercase fw-bold small mb-2">Total Pendapatan Bulanan</h6>
+                  <div className="display-6 fw-bold mb-0">{formatCurrency(stats.total_earnings)}</div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="card h-100 border-0 shadow-sm bg-white overflow-hidden">
+                <div className="card-body p-4 position-relative">
+                  <div className="position-absolute end-0 top-0 opacity-10 me-n2 mt-n2 text-success">
+                    <Users size={100} />
+                  </div>
+                  <h6 className="text-muted text-uppercase fw-bold small mb-2">Pasien Unik yang Ditagih</h6>
+                  <div className="display-6 fw-bold text-dark">{stats.total_patients}</div>
+                  <p className="text-muted small mb-0 mt-2">Jumlah pasien yang melakukan transaksi lunas.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center text-md-end">
+            <button 
+              onClick={handleDownloadPDF} 
+              className="btn btn-outline-primary btn-lg px-4 shadow-sm fw-bold d-inline-flex align-items-center gap-2 rounded-pill"
+            >
+              <Download size={20} />
+              <span>Unduh Laporan PDF</span>
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

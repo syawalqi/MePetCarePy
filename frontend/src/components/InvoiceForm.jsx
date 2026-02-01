@@ -108,7 +108,7 @@ const InvoiceForm = ({ patientId, medicalRecordId, onSuccess }) => {
                       <span className="input-group-text bg-light border-end-0 text-muted" style={{ fontSize: '0.8rem' }}>Rp</span>
                       <input
                         type="number"
-                        step="500"
+                        step="1"
                         className="form-control form-control-sm border-start-0 ps-1 fw-medium"
                         value={item.unit_price_at_billing}
                         onChange={(e) => handleChange(index, 'unit_price_at_billing', e.target.value)}
