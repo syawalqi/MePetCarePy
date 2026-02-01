@@ -34,5 +34,33 @@ body {
 }
 
 .btn-primary {
+
   border-radius: 8px;
+
+}
+
+
+
+@keyframes slideIn {
+
+  from { transform: translateX(-100%); }
+
+  to { transform: translateX(0); }
+
+}
+
+
+
+.animate-slide-in {
+
+  animation: slideIn 0.3s ease-out forwards;
+
+}
+
+
+
+.z-3 {
+
+  z-index: 1050;
+
 }
