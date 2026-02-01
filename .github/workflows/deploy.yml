@@ -1,18 +1,26 @@
-name: Deploy to GitHub Pages
+# Workflow for building and deploying a Vite React app to GitHub Pages
+name: Deploy static content to Pages
 
 on:
   push:
-    branches: [ master ]
-    # Only trigger build if files in the frontend directory change
+    branches: ["master"]
     paths:
       - 'frontend/**'
       - '.github/workflows/deploy.yml'
 
+  workflow_dispatch:
+
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,29 +33,40 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           cd frontend
           npm install
 
       - name: Build
         env:
-          # Strictly pulling from GitHub Secrets
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
           cd frontend
           npm run build
-          
-          # Disable Jekyll processing
+          # Fix for GitHub Pages Jekyll processing
           touch dist/.nojekyll
-          
-          # Support for SPA routing on GitHub Pages
+          # Fix for SPA routing (redirect 404 to index)
           cp dist/index.html dist/404.html
 
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          folder: frontend/dist
-          branch: gh-pages
+          # Upload the build output from the frontend/dist folder
+          path: 'frontend/dist'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
