@@ -1,4 +1,4 @@
-name: Deploy Frontend to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -28,14 +28,20 @@ jobs:
 
       - name: Build
         env:
-          # You must add these secrets in your GitHub Repo Settings
+          # Inject Secrets from GitHub Settings
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          # Hardcode your Railway URL here (or use a secret VITE_API_URL)
           VITE_API_URL: "https://mepetcarepy-production.up.railway.app"
         run: |
           cd frontend
           npm run build
+          
+          # FIX 1: Disable Jekyll to allow underscore folders
           touch dist/.nojekyll
+          
+          # FIX 2: Create 404.html for SPA routing support
+          cp dist/index.html dist/404.html
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4

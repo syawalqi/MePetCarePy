@@ -4,5 +4,6 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/MePetCarePy/', // Matches your GitHub Repository name
+  // Use relative paths for assets. This makes the app work in any subfolder (like /MePetCarePy/)
+  base: '', 
 })
