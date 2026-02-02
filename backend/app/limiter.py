@@ -18,10 +18,14 @@ def get_dynamic_limit(request: Request = None) -> str:
     Handles cases where slowapi might not pass the request.
     """
     if request is None:
-        return "5/minute" # Safe default
+        return "100/minute" # Reasonable default for all authenticated users
         
     role = getattr(request.state, "user_role", None)
     
+    # Handle Enum objects (extract value)
+    if hasattr(role, "value"):
+        role = role.value
+        
     if role == "ADMINISTRATOR":
         return "100/minute"
     if role == "VETERINARIAN":
@@ -29,6 +33,6 @@ def get_dynamic_limit(request: Request = None) -> str:
     if role:
         return "20/minute"
     
-    return "5/minute"
+    return "10/minute"
 
 limiter = Limiter(key_func=get_role_based_rate_limit)

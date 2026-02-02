@@ -54,7 +54,11 @@ scripts/migrate_to_supabase.py
 scripts/get_token.py
 # scripts/seed_admin.py # Kept as tracked utility
 
+# Generated Reports & Logs
+reports/
+logs/
+*.log
+*.pdf
 
-
-#test
+# Test
 note.txt

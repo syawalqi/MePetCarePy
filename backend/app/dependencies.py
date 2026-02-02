@@ -93,43 +93,29 @@ def get_admin_client():
 
 
 async def check_session(
-
     request: Request,
-
     current_user = Depends(get_current_user),
-
     db: Session = Depends(get_db)
-
 ):
-
     """
-
     Validates that the user has an active session in the DB 
-
     matching their current bearer token.
-
+    Also populates request.state.user_role for rate limiting.
     """
-
     # Extract token from header
-
     auth_header = request.headers.get("Authorization")
-
     if not auth_header or not auth_header.startswith("Bearer "):
-
         raise HTTPException(status_code=401, detail="Missing or invalid session token")
-
     
-
     token = auth_header.split(" ")[1]
-
     
-
     is_valid, message = crud_user.validate_session(db, current_user.id, token)
-
     if not is_valid:
-
         raise HTTPException(status_code=401, detail=message)
-
     
-
+    # Fetch profile to get role for rate limiting
+    profile = crud_user.get_profile(db, current_user.id)
+    if profile:
+        request.state.user_role = profile.role
+    
     return True

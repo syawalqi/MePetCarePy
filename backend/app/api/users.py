@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
@@ -6,13 +6,16 @@ from app.schemas.user import ProfileRead, StaffCreate, SessionCreate, SessionRea
 from app.crud import user as crud_user
 from app.dependencies import get_current_user, check_role, get_admin_client
 from app.models.user import UserRole
+from app.limiter import limiter, get_dynamic_limit
 
 router = APIRouter(prefix="/users", tags=["users"])
 
 # --- SESSION ENDPOINTS ---
 
 @router.post("/session", response_model=SessionRead)
+@limiter.limit(get_dynamic_limit)
 def create_user_session(
+    request: Request,
     sess_in: SessionCreate,
     current_user = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -21,7 +24,9 @@ def create_user_session(
     return crud_user.create_or_update_session(db, current_user.id, sess_in.session_token)
 
 @router.get("/session/validate")
+@limiter.limit(get_dynamic_limit)
 def validate_user_session(
+    request: Request,
     token: str,
     current_user = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -33,7 +38,9 @@ def validate_user_session(
     return {"status": "valid"}
 
 @router.delete("/session")
+@limiter.limit(get_dynamic_limit)
 def end_user_session(
+    request: Request,
     current_user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -44,15 +51,17 @@ def end_user_session(
 # --- USER ENDPOINTS ---
 
 @router.post("/", response_model=ProfileRead, status_code=status.HTTP_201_CREATED)
+@limiter.limit(get_dynamic_limit)
 def create_staff_user(
+    request: Request,
     staff_in: StaffCreate,
     db: Session = Depends(get_db),
     admin_client = Depends(get_admin_client),
-    _ = Depends(check_role([UserRole.SUPERADMIN]))
+    _ = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]))
 ):
     """
     Creates a new staff user in Supabase Auth and a corresponding entry in the public.profiles table.
-    Restricted to ADMINISTRATORS.
+    Restricted to SUPERADMIN and ADMINISTRATORS.
     """
     try:
         # 1. Create user in Supabase Auth
@@ -85,7 +94,9 @@ def create_staff_user(
         raise HTTPException(status_code=500, detail=f"User creation failed: {detail}")
 
 @router.get("/", response_model=List[ProfileRead])
+@limiter.limit(get_dynamic_limit)
 def read_users(
+    request: Request,
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
@@ -94,7 +105,9 @@ def read_users(
     return crud_user.get_profiles(db, skip=skip, limit=limit)
 
 @router.get("/me", response_model=ProfileRead)
+@limiter.limit(get_dynamic_limit)
 def read_user_me(
+    request: Request,
     current_user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -104,11 +117,13 @@ def read_user_me(
     return profile
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@limiter.limit(get_dynamic_limit)
 def delete_staff_user(
+    request: Request,
     user_id: str,
     db: Session = Depends(get_db),
     admin_client = Depends(get_admin_client),
-    current_profile = Depends(check_role([UserRole.SUPERADMIN]))
+    current_profile = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]))
 ):
     """
     Deletes a staff user from both Supabase Auth and the profiles table.
