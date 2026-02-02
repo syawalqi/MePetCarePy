@@ -12,7 +12,8 @@ import {
   Shield,
   Mail,
   CheckCircle2,
-  Crown
+  Crown,
+  Trash2
 } from 'lucide-react';
 
 const StaffList = () => {
@@ -37,6 +38,16 @@ const StaffList = () => {
     }
   };
 
+  const handleDelete = async (userId) => {
+    if (!window.confirm("PERINGATAN: Menghapus staf akan menghapus akun login dan profil mereka secara permanen. Lanjutkan?")) return;
+    try {
+      await userService.deleteUser(userId);
+      loadUsers();
+    } catch (error) {
+      alert(error.response?.data?.detail || "Gagal menghapus staf.");
+    }
+  };
+
   const filteredUsers = users.filter(u => 
     u.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -58,6 +69,8 @@ const StaffList = () => {
     }
   };
 
+  const isSuperAdmin = profile?.role === 'SUPERADMIN';
+
   if (loading) return <LoadingScreen message="Memuat data staf..." />;
 
   return (
@@ -68,7 +81,7 @@ const StaffList = () => {
           <h2 className="fw-bold mb-1">Manajemen Staf</h2>
           <p className="text-muted mb-0">Kelola akun dan akses pengguna klinik.</p>
         </div>
-        {profile?.role === 'SUPERADMIN' && (
+        {isSuperAdmin && (
           <Link to="/staff/new" className="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
             <UserPlus size={18} />
             <span className="d-none d-md-inline">Tambah Staf</span>
@@ -127,7 +140,18 @@ const StaffList = () => {
                         <div className="bg-primary bg-opacity-10 text-primary rounded-circle p-3">
                           <Users size={24} />
                         </div>
-                        {getRoleBadge(u.role)}
+                        <div className="d-flex flex-column align-items-end gap-2">
+                          {getRoleBadge(u.role)}
+                          {isSuperAdmin && u.id !== profile.id && (
+                            <button 
+                              onClick={() => handleDelete(u.id)}
+                              className="btn btn-link text-danger p-0"
+                              title="Hapus Staf"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          )}
+                        </div>
                       </div>
                       
                       <h5 className="card-title fw-bold mb-1">{u.full_name}</h5>
@@ -140,7 +164,7 @@ const StaffList = () => {
                         <span className="badge bg-success-subtle text-success d-flex align-items-center gap-1 rounded-pill px-2">
                           <CheckCircle2 size={12} /> Aktif
                         </span>
-                        <small className="text-muted">ID: #{u.id}</small>
+                        <small className="text-muted">ID: #{u.id.substring(0, 8)}</small>
                       </div>
                     </div>
                   </div>
@@ -157,7 +181,7 @@ const StaffList = () => {
                       <th className="py-3">Peran (Role)</th>
                       <th className="py-3">Email</th>
                       <th className="py-3">Status</th>
-                      <th className="py-3 pe-4 text-end">ID</th>
+                      <th className="py-3 pe-4 text-end">Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -171,7 +195,19 @@ const StaffList = () => {
                             Aktif
                           </span>
                         </td>
-                        <td className="pe-4 text-end text-muted small">#{u.id}</td>
+                        <td className="pe-4 text-end">
+                          {isSuperAdmin && u.id !== profile.id ? (
+                            <button 
+                              onClick={() => handleDelete(u.id)}
+                              className="btn btn-outline-danger btn-sm rounded-circle border-0"
+                              title="Hapus Staf"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          ) : (
+                            <small className="text-muted">N/A</small>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

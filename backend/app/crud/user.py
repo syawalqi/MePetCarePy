@@ -13,3 +13,10 @@ def create_profile(db: Session, profile_in: dict):
     db.commit()
     db.refresh(db_profile)
     return db_profile
+
+def delete_profile(db: Session, user_id: str):
+    db_profile = get_profile(db, user_id)
+    if db_profile:
+        db.delete(db_profile)
+        db.commit()
+    return db_profile
