@@ -2,19 +2,22 @@
 ALTER TABLE public.invoices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.invoice_items ENABLE ROW LEVEL SECURITY;
 
--- 1. INVOICE ACCESS (Admins, Vets, and Support)
--- This checks if the person logged in (auth.uid()) has a profile with a valid role.
-CREATE POLICY "Staff_Access_Invoices"
-ON public.invoices 
-FOR ALL 
-TO authenticated
+-- 1. INVOICES POLICIES
+
+-- SELECT (READ): Everyone (SuperAdmin, Admin, Vet, Support)
+CREATE POLICY "Invoice_Select_Policy"
+ON public.invoices FOR SELECT TO authenticated
 USING (
   EXISTS (
     SELECT 1 FROM public.profiles
     WHERE profiles.id = auth.uid()::text 
     AND profiles.role IN ('SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
   )
-)
+);
+
+-- INSERT (CREATE): Everyone (SuperAdmin, Admin, Vet, Support)
+CREATE POLICY "Invoice_Insert_Policy"
+ON public.invoices FOR INSERT TO authenticated
 WITH CHECK (
   EXISTS (
     SELECT 1 FROM public.profiles
@@ -23,25 +26,36 @@ WITH CHECK (
   )
 );
 
--- 2. INVOICE ITEMS ACCESS (Linked to the profile-based role check)
-CREATE POLICY "Staff_Access_Invoice_Items"
-ON public.invoice_items 
-FOR ALL 
-TO authenticated
+-- UPDATE: SuperAdmin, Admin, Vet ONLY
+CREATE POLICY "Invoice_Update_Policy"
+ON public.invoices FOR UPDATE TO authenticated
 USING (
   EXISTS (
     SELECT 1 FROM public.profiles
     WHERE profiles.id = auth.uid()::text 
-    AND profiles.role IN ('SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
+    AND profiles.role IN ('SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN')
   )
 )
 WITH CHECK (
   EXISTS (
     SELECT 1 FROM public.profiles
     WHERE profiles.id = auth.uid()::text 
-    AND profiles.role IN ('SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
+    AND profiles.role IN ('SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN')
   )
 );
 
--- NOTE: DELETE is intentionally omitted. 
--- Only the 'service_role' key (used by our backend) bypasses RLS to perform deletions.
+-- DELETE: SuperAdmin ONLY
+CREATE POLICY "Invoice_Delete_Policy"
+ON public.invoices FOR DELETE TO authenticated
+USING (
+  EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE profiles.id = auth.uid()::text 
+    AND profiles.role = 'SUPERADMIN'
+  )
+);
+
+-- 2. INVOICE_ITEMS POLICIES (Matches parent invoice logic for simplicity)
+CREATE POLICY "Items_Select_Policy" ON public.invoice_items FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Items_Insert_Policy" ON public.invoice_items FOR INSERT TO authenticated WITH CHECK (true);
+-- Update and Delete on items are usually handled via invoice cascade or service role.

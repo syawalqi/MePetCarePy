@@ -5,6 +5,7 @@ export const invoiceService = {
   getInvoice: (id) => client.get(`/invoices/${id}`),
   createInvoice: (data) => client.post('/invoices/', data),
   updateStatus: (id, status) => client.patch(`/invoices/${id}/status`, { status }),
+  deleteInvoice: (id) => client.delete(`/invoices/${id}`),
   getMonthlyReport: (year, month) => 
     client.get(`/invoices/reports/monthly`, { params: { year, month } }),
   getMonthlyReportPDF: (year, month) => 

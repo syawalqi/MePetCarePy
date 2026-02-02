@@ -84,3 +84,11 @@ def get_monthly_report(db: Session, year: int, month: int):
         "total_earnings": float(total_earnings),
         "total_patients": total_patients
     }
+
+def delete_invoice(db: Session, invoice_id: int):
+    db_invoice = get_invoice(db, invoice_id)
+    if not db_invoice:
+        return None
+    db_invoice.is_deleted = True
+    db.commit()
+    return db_invoice

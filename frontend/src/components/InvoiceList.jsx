@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { invoiceService } from '../api/invoiceService';
-import { CreditCard, Calendar, CheckCircle2, Clock } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { CreditCard, Calendar, CheckCircle2, Clock, Trash2 } from 'lucide-react';
 
 const InvoiceList = ({ patientId }) => {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { profile } = useAuth();
 
   useEffect(() => {
     loadInvoices();
@@ -32,6 +34,20 @@ const InvoiceList = ({ patientId }) => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("ARE YOU SURE? This will permanently remove the invoice record.")) return;
+    try {
+      await invoiceService.deleteInvoice(id);
+      loadInvoices();
+    } catch (error) {
+      alert("Failed to delete invoice. Restricted to Super Admin.");
+    }
+  };
+
+  // Roles that can update status (CRU)
+  const canUpdate = ['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN'].includes(profile?.role);
+  const isSuperAdmin = profile?.role === 'SUPERADMIN';
+
   if (loading) return (
     <div className="py-3 text-center text-muted small">
       <div className="spinner-border spinner-border-sm me-2" role="status"></div>
@@ -57,7 +73,18 @@ const InvoiceList = ({ patientId }) => {
               <div className="card-body p-3">
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <div>
-                    <div className="fw-bold mb-0">Invoice #{inv.id}</div>
+                    <div className="fw-bold mb-0 d-flex align-items-center gap-2">
+                      Invoice #{inv.id}
+                      {isSuperAdmin && (
+                        <button 
+                          onClick={() => handleDelete(inv.id)}
+                          className="btn btn-link text-danger p-0 border-0"
+                          title="Delete Invoice"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </div>
                     <div className="text-muted small d-flex align-items-center gap-1">
                       <Calendar size={12} />
                       <span>{new Date(inv.created_at).toLocaleDateString()}</span>
@@ -83,7 +110,7 @@ const InvoiceList = ({ patientId }) => {
                     )}
                   </div>
                   
-                  {inv.status === 'UNPAID' && (
+                  {inv.status === 'UNPAID' && canUpdate && (
                     <button 
                       className="btn btn-sm btn-success px-3 shadow-sm"
                       onClick={() => handleMarkAsPaid(inv.id)}

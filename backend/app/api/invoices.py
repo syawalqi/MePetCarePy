@@ -60,7 +60,7 @@ def update_status(
     invoice_id: int, 
     update: InvoiceUpdate, 
     db: Session = Depends(get_db),
-    current_profile = Depends(check_role(ALL_STAFF))
+    current_profile = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN]))
 ):
     if not update.status:
         raise HTTPException(status_code=400, detail="Status is required")
@@ -83,6 +83,25 @@ def update_status(
             "old_status": old_status,
             "new_status": update.status
         }
+    )
+    return db_invoice
+
+@router.delete("/{invoice_id}", response_model=InvoiceRead)
+def delete_invoice(
+    invoice_id: int,
+    db: Session = Depends(get_db),
+    current_profile = Depends(check_role([UserRole.SUPERADMIN]))
+):
+    db_invoice = crud_invoice.delete_invoice(db, invoice_id)
+    if not db_invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    log_action(
+        user_id=current_profile.id,
+        role=current_profile.role,
+        action="DELETE",
+        entity="INVOICE",
+        entity_id=str(invoice_id)
     )
     return db_invoice
 

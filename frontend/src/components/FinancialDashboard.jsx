@@ -13,13 +13,13 @@ const FinancialDashboard = () => {
     month: new Date().getMonth() + 1
   });
 
-  const isAdmin = profile?.role === 'ADMINISTRATOR';
+  const hasAccess = ['SUPERADMIN', 'ADMINISTRATOR'].includes(profile?.role);
 
   useEffect(() => {
-    if (isAdmin) {
+    if (hasAccess) {
       loadStats();
     }
-  }, [isAdmin, date]);
+  }, [hasAccess, date]);
 
   const loadStats = async () => {
     setLoading(true);
@@ -52,9 +52,9 @@ const FinancialDashboard = () => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
   };
 
-  if (!isAdmin) return (
+  if (!hasAccess) return (
     <div className="container py-5 text-center">
-      <div className="alert alert-warning d-inline-block">Akses Ditolak: Diperlukan peran Administrator.</div>
+      <div className="alert alert-warning d-inline-block">Akses Ditolak: Diperlukan peran Administrator atau SuperAdmin.</div>
     </div>
   );
 
