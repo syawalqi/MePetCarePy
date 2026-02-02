@@ -18,11 +18,10 @@ if not url or not key:
 
 supabase: Client = create_client(url, key)
 
-def create_admin(email, password, full_name):
-    print(f"Creating Auth user for {email}...")
+def create_admin(email, password, full_name, role="ADMINISTRATOR"):
+    print(f"Creating Auth user for {email} with role {role}...")
     try:
         # 1. Create user in Supabase Auth
-        # The sign_up method expects a dictionary with 'email' and 'password'
         auth_res = supabase.auth.sign_up({
             "email": email,
             "password": password,
@@ -42,12 +41,12 @@ def create_admin(email, password, full_name):
             "id": user_id,
             "full_name": full_name,
             "email": email,
-            "role": "ADMINISTRATOR"
+            "role": role
         }
         
         # Insert into profiles table
         res = supabase.table("profiles").insert(profile_data).execute()
-        print("Admin profile created successfully! You can now log in.")
+        print(f"{role} profile created successfully! You can now log in.")
 
     except Exception as e:
         print(f"Detailed Error: {e}")
@@ -56,9 +55,10 @@ def create_admin(email, password, full_name):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Seed an admin user for MePetCarePy")
-    parser.add_argument("--email", required=True, help="Admin email")
-    parser.add_argument("--password", required=True, help="Admin password")
-    parser.add_argument("--name", required=True, help="Admin full name")
+    parser.add_argument("--email", required=True, help="User email")
+    parser.add_argument("--password", required=True, help="User password")
+    parser.add_argument("--name", required=True, help="User full name")
+    parser.add_argument("--role", default="ADMINISTRATOR", choices=["SUPERADMIN", "ADMINISTRATOR"], help="User role (default: ADMINISTRATOR)")
     
     args = parser.parse_args()
-    create_admin(args.email, args.password, args.name)
+    create_admin(args.email, args.password, args.name, args.role)
