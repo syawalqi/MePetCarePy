@@ -1,11 +1,11 @@
 # Implementation Plan: PWA and Mobile UI Optimization (Refinement)
 
 ## Phase 1: PWA Configuration & Auto-Update
-- [x] Task: Update `vite.config.js` to ensure the Web App Manifest is correctly generated with `display: standalone` and correct theme colors. 5cc204c
-- [x] Task: Update `vite.config.js` to configure `vite-plugin-pwa` for prompt-based updates (`registerType: 'prompt'`) instead of `autoUpdate`. 7c43c5b
+- [x] Task: Update `vite.config.js` to ensure the Web App Manifest is correctly generated with `display: standalone` and correct theme colors. df0378d
+- [x] Task: Update `vite.config.js` to configure `vite-plugin-pwa` for prompt-based updates (`registerType: 'prompt'`) instead of `autoUpdate`. e32d5b0
 - [x] Task: Implement a "New Version Available" toast or banner in the UI that triggers the update refresh when clicked. 3d828a2
 - [x] Task: Configure the Service Worker (`vite-plugin-pwa` strategies) to cache specific API `GET` requests (e.g., `/owners`, `/patients`) for offline read-only access. 685f8fc
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: PWA Configuration & Auto-Update' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 1: PWA Configuration & Auto-Update' (Protocol in workflow.md)
 
 ## Phase 2: Offline UX & Read-Only Mode
 - [ ] Task: Create an `OfflineBanner` component that appears when `!navigator.onLine`.
