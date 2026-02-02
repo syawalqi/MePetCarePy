@@ -12,14 +12,14 @@ USING (
   EXISTS (
     SELECT 1 FROM public.profiles
     WHERE profiles.id = auth.uid()::text 
-    AND profiles.role IN ('ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
+    AND profiles.role IN ('SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
   )
 )
 WITH CHECK (
   EXISTS (
     SELECT 1 FROM public.profiles
     WHERE profiles.id = auth.uid()::text 
-    AND profiles.role IN ('ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
+    AND profiles.role IN ('SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
   )
 );
 
@@ -32,14 +32,14 @@ USING (
   EXISTS (
     SELECT 1 FROM public.profiles
     WHERE profiles.id = auth.uid()::text 
-    AND profiles.role IN ('ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
+    AND profiles.role IN ('SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
   )
 )
 WITH CHECK (
   EXISTS (
     SELECT 1 FROM public.profiles
     WHERE profiles.id = auth.uid()::text 
-    AND profiles.role IN ('ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
+    AND profiles.role IN ('SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF')
   )
 );
 

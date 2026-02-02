@@ -14,7 +14,7 @@ def create_staff_user(
     staff_in: StaffCreate,
     db: Session = Depends(get_db),
     admin_client = Depends(get_admin_client),
-    _ = Depends(check_role([UserRole.ADMINISTRATOR]))
+    _ = Depends(check_role([UserRole.SUPERADMIN]))
 ):
     """
     Creates a new staff user in Supabase Auth and a corresponding entry in the public.profiles table.
@@ -55,7 +55,7 @@ def read_users(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
-    _ = Depends(check_role([UserRole.ADMINISTRATOR]))
+    _ = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]))
 ):
     return crud_user.get_profiles(db, skip=skip, limit=limit)
 

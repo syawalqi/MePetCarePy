@@ -5,6 +5,7 @@ from .base import Base, TimestampMixin
 import enum
 
 class UserRole(str, enum.Enum):
+    SUPERADMIN = "SUPERADMIN"
     ADMINISTRATOR = "ADMINISTRATOR"
     VETERINARIAN = "VETERINARIAN"
     SUPPORT_STAFF = "SUPPORT_STAFF"

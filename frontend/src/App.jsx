@@ -29,7 +29,7 @@ function App() {
         <Route element={<Layout />}>
           
           {/* Protected Routes - All Staff */}
-          <Route element={<ProtectedRoute allowedRoles={['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF']} />}>
+          <Route element={<ProtectedRoute allowedRoles={['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF']} />}>
             <Route path="/" element={<DashboardHome />} />
             <Route path="/owners" element={<OwnerList />} />
             <Route path="/owners/:id" element={<OwnerDetails />} />
@@ -38,21 +38,25 @@ function App() {
           </Route>
 
           {/* Protected Routes - Management (Admin/Staff) */}
-          <Route element={<ProtectedRoute allowedRoles={['ADMINISTRATOR', 'SUPPORT_STAFF']} />}>
+          <Route element={<ProtectedRoute allowedRoles={['SUPERADMIN', 'ADMINISTRATOR', 'SUPPORT_STAFF']} />}>
             <Route path="/owners/new" element={<OwnerForm />} />
             <Route path="/patients/new" element={<PatientForm />} />
           </Route>
 
           {/* Protected Routes - Clinical Only */}
-          <Route element={<ProtectedRoute allowedRoles={['ADMINISTRATOR', 'VETERINARIAN']} />}>
+          <Route element={<ProtectedRoute allowedRoles={['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN']} />}>
             <Route path="/patients/:id/records/new" element={<MedicalRecordForm />} />
           </Route>
 
           {/* Protected Routes - Admin Only */}
-          <Route element={<ProtectedRoute allowedRoles={['ADMINISTRATOR']} />}>
+          <Route element={<ProtectedRoute allowedRoles={['SUPERADMIN', 'ADMINISTRATOR']} />}>
             <Route path="/staff" element={<StaffList />} />
-            <Route path="/staff/new" element={<StaffForm />} />
             <Route path="/reports" element={<FinancialDashboard />} />
+          </Route>
+
+          {/* Protected Routes - SuperAdmin Only */}
+          <Route element={<ProtectedRoute allowedRoles={['SUPERADMIN']} />}>
+            <Route path="/staff/new" element={<StaffForm />} />
           </Route>
           
         </Route>

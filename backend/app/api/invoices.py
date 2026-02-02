@@ -12,7 +12,7 @@ from app.logger import log_action
 router = APIRouter(prefix="/invoices", tags=["invoices"])
 
 # All staff can manage invoices and payments
-ALL_STAFF = [UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
+ALL_STAFF = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
 
 @router.post("/", response_model=InvoiceRead, status_code=status.HTTP_201_CREATED)
 def create_invoice(
@@ -96,7 +96,7 @@ def get_monthly_summary(
     year: int, 
     month: int, 
     db: Session = Depends(get_db),
-    _ = Depends(check_role([UserRole.ADMINISTRATOR]))
+    _ = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]))
 ):
     return crud_invoice.get_monthly_report(db, year=year, month=month)
 
@@ -105,7 +105,7 @@ def export_monthly_report_pdf(
     year: int, 
     month: int, 
     db: Session = Depends(get_db),
-    _ = Depends(check_role([UserRole.ADMINISTRATOR]))
+    _ = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]))
 ):
     report = crud_invoice.get_monthly_report(db, year=year, month=month)
     month_name = datetime(year, month, 1).strftime('%B')

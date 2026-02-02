@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { userService } from '../api/userService';
 import { Link } from 'react-router-dom';
 import LoadingScreen from './LoadingScreen';
+import { useAuth } from '../context/AuthContext';
 import {
   Users,
   UserPlus,
@@ -10,7 +11,8 @@ import {
   List as ListIcon,
   Shield,
   Mail,
-  CheckCircle2
+  CheckCircle2,
+  Crown
 } from 'lucide-react';
 
 const StaffList = () => {
@@ -18,6 +20,7 @@ const StaffList = () => {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('card'); // 'card' or 'table'
   const [searchTerm, setSearchTerm] = useState('');
+  const { profile } = useAuth();
 
   useEffect(() => {
     loadUsers();
@@ -42,6 +45,10 @@ const StaffList = () => {
 
   const getRoleBadge = (role) => {
     switch (role) {
+      case 'SUPERADMIN':
+        return <span className="badge bg-dark text-white border border-dark d-flex align-items-center gap-1">
+          <Crown size={12} /> Super Admin
+        </span>;
       case 'ADMINISTRATOR':
         return <span className="badge bg-danger-subtle text-danger border border-danger-subtle">Administrator</span>;
       case 'VETERINARIAN':
@@ -61,10 +68,12 @@ const StaffList = () => {
           <h2 className="fw-bold mb-1">Manajemen Staf</h2>
           <p className="text-muted mb-0">Kelola akun dan akses pengguna klinik.</p>
         </div>
-        <Link to="/staff/new" className="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
-          <UserPlus size={18} />
-          <span className="d-none d-md-inline">Tambah Staf</span>
-        </Link>
+        {profile?.role === 'SUPERADMIN' && (
+          <Link to="/staff/new" className="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+            <UserPlus size={18} />
+            <span className="d-none d-md-inline">Tambah Staf</span>
+          </Link>
+        )}
       </div>
 
       {/* Controls */}

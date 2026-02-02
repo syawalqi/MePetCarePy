@@ -102,6 +102,7 @@ const StaffForm = () => {
                       <option value="SUPPORT_STAFF">Staf Pendukung (Resepsionis/Admin)</option>
                       <option value="VETERINARIAN">Dokter Hewan</option>
                       <option value="ADMINISTRATOR">Administrator Sistem</option>
+                      <option value="SUPERADMIN">Super Admin (Akses Penuh)</option>
                     </select>
                   </div>
                 </div>
