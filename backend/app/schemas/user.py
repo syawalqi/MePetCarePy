@@ -24,3 +24,10 @@ class ProfileRead(ProfileBase):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class SessionCreate(BaseModel):
+    session_token: str
+
+class SessionRead(BaseModel):
+    user_id: str
+    last_activity: datetime

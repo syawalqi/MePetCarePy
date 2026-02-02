@@ -77,9 +77,59 @@ def check_role(required_roles: List[UserRole]):
     return role_checker
 
 def get_admin_client():
+
     if not supabase_admin:
+
         raise HTTPException(
+
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+
             detail="Supabase Service Role Key not configured."
+
         )
+
     return supabase_admin
+
+
+
+async def check_session(
+
+    request: Request,
+
+    current_user = Depends(get_current_user),
+
+    db: Session = Depends(get_db)
+
+):
+
+    """
+
+    Validates that the user has an active session in the DB 
+
+    matching their current bearer token.
+
+    """
+
+    # Extract token from header
+
+    auth_header = request.headers.get("Authorization")
+
+    if not auth_header or not auth_header.startswith("Bearer "):
+
+        raise HTTPException(status_code=401, detail="Missing or invalid session token")
+
+    
+
+    token = auth_header.split(" ")[1]
+
+    
+
+    is_valid, message = crud_user.validate_session(db, current_user.id, token)
+
+    if not is_valid:
+
+        raise HTTPException(status_code=401, detail=message)
+
+    
+
+    return True

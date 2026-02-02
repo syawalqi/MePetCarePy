@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../api/supabase';
 import apiClient from '../api/client';
+import { userService } from '../api/userService';
 
 const AuthContext = createContext({});
 
@@ -22,7 +23,10 @@ export const AuthProvider = ({ children }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (session) fetchProfile(session.user.id);
+      if (session) {
+        apiClient.defaults.headers.common['Authorization'] = `Bearer ${session.access_token}`;
+        fetchProfile(session.user.id);
+      }
       else setLoading(false);
     });
 
@@ -54,6 +58,10 @@ export const AuthProvider = ({ children }) => {
       setProfile(data); 
     } catch (err) {
       console.error("Error fetching profile:", err);
+      if (err.response?.status === 401) {
+        console.warn("Session invalidated by backend. Logging out.");
+        logout();
+      }
     } finally {
       setLoading(false);
     }
@@ -68,6 +76,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    try {
+      await userService.deleteSession();
+    } catch (err) {
+      console.error("Failed to delete backend session:", err);
+    }
     await supabase.auth.signOut();
   };
 

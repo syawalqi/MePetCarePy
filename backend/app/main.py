@@ -45,19 +45,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(owners.router)
-app.include_router(patients.router)
-app.include_router(users.router)
-app.include_router(medical_records.router)
-app.include_router(invoices.router)
-
-from app.dependencies import get_current_user, check_role
+from app.dependencies import get_current_user, check_role, check_session
 from app.models.user import UserRole
 from app.limiter import limiter, get_dynamic_limit
 
-ALL_STAFF = [UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
+app.include_router(owners.router, dependencies=[Depends(check_session)])
+app.include_router(patients.router, dependencies=[Depends(check_session)])
+app.include_router(users.router) # Users router handles session creation itself
+app.include_router(medical_records.router, dependencies=[Depends(check_session)])
+app.include_router(invoices.router, dependencies=[Depends(check_session)])
+
+ALL_STAFF = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
 
 @app.get("/")
 @limiter.limit(get_dynamic_limit)
-async def read_root(request: Request, _ = Depends(check_role(ALL_STAFF))):
+async def read_root(request: Request, _ = Depends(check_role(ALL_STAFF)), _s = Depends(check_session)):
     return {"message": "Welcome to MePetCarePy API"}

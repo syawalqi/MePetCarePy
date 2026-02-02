@@ -2,12 +2,46 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
-from app.schemas.user import ProfileRead, StaffCreate
+from app.schemas.user import ProfileRead, StaffCreate, SessionCreate, SessionRead
 from app.crud import user as crud_user
 from app.dependencies import get_current_user, check_role, get_admin_client
 from app.models.user import UserRole
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+# --- SESSION ENDPOINTS ---
+
+@router.post("/session", response_model=SessionRead)
+def create_user_session(
+    sess_in: SessionCreate,
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Creates or updates a session for the current user."""
+    return crud_user.create_or_update_session(db, current_user.id, sess_in.session_token)
+
+@router.get("/session/validate")
+def validate_user_session(
+    token: str,
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Validates if the session is still active and recent."""
+    is_valid, message = crud_user.validate_session(db, current_user.id, token)
+    if not is_valid:
+        raise HTTPException(status_code=401, detail=message)
+    return {"status": "valid"}
+
+@router.delete("/session")
+def end_user_session(
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Deletes the session on logout."""
+    crud_user.delete_session(db, current_user.id)
+    return {"status": "session ended"}
+
+# --- USER ENDPOINTS ---
 
 @router.post("/", response_model=ProfileRead, status_code=status.HTTP_201_CREATED)
 def create_staff_user(

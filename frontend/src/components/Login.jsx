@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../api/supabase';
+import { userService } from '../api/userService';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, Activity } from 'lucide-react';
 import LoadingScreen from './LoadingScreen';
@@ -16,17 +17,21 @@ const Login = () => {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
-      // The ProtectedRoute will show the LoadingScreen while profile is being fetched
+      if (authError) throw authError;
+
+      // Create Session in Backend
+      await userService.createSession(data.session.access_token);
+      
       navigate('/');
+    } catch (err) {
+      setError(err.message || "Gagal masuk ke sistem.");
+      setLoading(false);
     }
   };
 

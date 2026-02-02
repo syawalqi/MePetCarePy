@@ -5,6 +5,8 @@ import { Activity, Clipboard, ArrowLeft, Thermometer, Heart, Wind, Scale, Save, 
 
 const MedicalRecordForm = () => {
   const { id: patientId } = useParams();
+
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     subjective: '',
