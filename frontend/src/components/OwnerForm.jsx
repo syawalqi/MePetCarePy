@@ -52,17 +52,22 @@ const OwnerForm = () => {
     setLoading(true);
     setError(null);
     try {
-      const submitData = { ...formData };
-
-      // Sanitize phone number: remove spaces, dashes, parentheses
-      // Keep only digits and leading +
-      if (submitData.phone_number) {
-        submitData.phone_number = submitData.phone_number.replace(/[^\d+]/g, '');
+      const submitData = {};
+      
+      // Only include fields that have values to satisfy OwnerUpdate optional requirements
+      if (formData.full_name) submitData.full_name = formData.full_name;
+      
+      if (formData.phone_number) {
+        // Sanitize: remove non-digits (except leading +)
+        submitData.phone_number = formData.phone_number.replace(/[^\d+]/g, '');
       }
 
-      // Remove empty email
-      if (!submitData.email || submitData.email.trim() === '') {
-        delete submitData.email;
+      if (formData.email && formData.email.trim() !== '') {
+        submitData.email = formData.email.trim();
+      }
+
+      if (formData.address) {
+        submitData.address = formData.address;
       }
 
       if (isEditMode) {
@@ -73,7 +78,24 @@ const OwnerForm = () => {
       navigate('/owners');
     } catch (error) {
       console.error('Error saving owner:', error);
-      setError(error.response?.data?.detail || 'Gagal menyimpan data pemilik. Periksa kembali input Anda.');
+      
+      const detail = error.response?.data?.detail;
+      let errorMessage = 'Gagal menyimpan data pemilik. Periksa kembali input Anda.';
+
+      if (typeof detail === 'string') {
+        errorMessage = detail;
+      } else if (Array.isArray(detail)) {
+        // FastAPI validation error detail is a list of objects
+        // Convert to a readable string
+        errorMessage = detail.map(err => {
+          const field = err.loc[err.loc.length - 1];
+          if (field === 'phone_number') return 'Format nomor telepon tidak valid (7-15 digit).';
+          if (field === 'email') return 'Format email tidak valid.';
+          return `${field}: ${err.msg}`;
+        }).join(' ');
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
