@@ -6,11 +6,11 @@ from dotenv import load_dotenv
 
 # Load .env from the backend directory
 base_dir = os.path.dirname(os.path.abspath(__file__))
-env_path = os.path.join(base_dir, "backend", ".env")
+env_path = os.path.join(base_dir, "..", "backend", ".env")
 load_dotenv(env_path)
 
 url = os.getenv("SUPABASE_URL")
-key = os.getenv("SUPABASE_ANON_KEY")
+key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 if not url or not key:
     print(f"Error: SUPABASE_URL or SUPABASE_ANON_KEY not found in {env_path}")
@@ -44,14 +44,28 @@ def create_admin(email, password, full_name, role="ADMINISTRATOR"):
             "role": role
         }
         
-        # Insert into profiles table
-        res = supabase.table("profiles").insert(profile_data).execute()
-        print(f"{role} profile created successfully! You can now log in.")
-
     except Exception as e:
         print(f"Detailed Error: {e}")
         if hasattr(e, 'message'):
             print(f"Message: {e.message}")
+
+    # 3. Insert profile using SQLAlchemy (Bypass RLS)
+    try:
+        from sqlalchemy import create_engine, text
+        db_url = os.getenv("DATABASE_URL")
+        if not db_url:
+            print("DATABASE_URL not found, cannot seed profile.")
+            return
+
+        engine = create_engine(db_url)
+        with engine.connect() as conn:
+            stmt = text("INSERT INTO profiles (id, full_name, email, role) VALUES (:id, :full_name, :email, :role)")
+            conn.execute(stmt, {"id": user_id, "full_name": full_name, "email": email, "role": role})
+            conn.commit()
+            print(f"{role} profile created successfully! You can now log in.")
+            
+    except Exception as e:
+        print(f"Profile insertion failed (SQL): {e}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Seed an admin user for MePetCarePy")

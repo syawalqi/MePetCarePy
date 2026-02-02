@@ -24,10 +24,10 @@ function App() {
       <UpdatePrompt />
       <Routes>
         <Route path="/login" element={<Login />} />
-        
+
         {/* Main Application Layout */}
         <Route element={<Layout />}>
-          
+
           {/* Protected Routes - All Staff */}
           <Route element={<ProtectedRoute allowedRoles={['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF']} />}>
             <Route path="/" element={<DashboardHome />} />
@@ -40,6 +40,7 @@ function App() {
           {/* Protected Routes - Management (Admin/Staff) */}
           <Route element={<ProtectedRoute allowedRoles={['SUPERADMIN', 'ADMINISTRATOR', 'SUPPORT_STAFF']} />}>
             <Route path="/owners/new" element={<OwnerForm />} />
+            <Route path="/owners/edit/:id" element={<OwnerForm />} />
             <Route path="/patients/new" element={<PatientForm />} />
           </Route>
 
@@ -58,7 +59,7 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={['SUPERADMIN']} />}>
             <Route path="/staff/new" element={<StaffForm />} />
           </Route>
-          
+
         </Route>
       </Routes>
     </AuthProvider>

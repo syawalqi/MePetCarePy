@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ownerService } from '../api/ownerService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { User, Mail, Phone, MapPin, ArrowLeft } from 'lucide-react';
 
 const OwnerForm = () => {
+  const { id } = useParams();
+  const isEditMode = Boolean(id);
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
@@ -12,7 +16,33 @@ const OwnerForm = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+
+  // Fetch data if in edit mode
+  useEffect(() => {
+    if (isEditMode) {
+      const fetchOwner = async () => {
+        setLoading(true);
+        try {
+          const response = await ownerService.getOwner(id);
+          // Assuming response.data contains the owner fields directly
+          // Adjust checks based on actual API response structure if needed (e.g. response.data.data)
+          const data = response.data;
+          setFormData({
+            full_name: data.full_name || '',
+            email: data.email || '',
+            phone_number: data.phone_number || '',
+            address: data.address || '',
+          });
+        } catch (err) {
+          console.error('Error fetching owner:', err);
+          setError('Failed to load owner details.');
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchOwner();
+    }
+  }, [id, isEditMode]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,12 +55,16 @@ const OwnerForm = () => {
     try {
       const submitData = { ...formData };
       if (!submitData.email) delete submitData.email;
-      
-      await ownerService.createOwner(submitData);
+
+      if (isEditMode) {
+        await ownerService.updateOwner(id, submitData);
+      } else {
+        await ownerService.createOwner(submitData);
+      }
       navigate('/owners');
     } catch (error) {
-      console.error('Error creating owner:', error);
-      setError('Failed to create owner. Please check the data.');
+      console.error('Error saving owner:', error);
+      setError('Failed to save owner. Please check the data.');
     } finally {
       setLoading(false);
     }
@@ -48,8 +82,12 @@ const OwnerForm = () => {
           <div className="card shadow-sm border-0">
             <div className="card-body p-4 p-md-5">
               <div className="mb-4">
-                <h2 className="fw-bold mb-1">Register New Owner</h2>
-                <p className="text-muted">Enter contact information for the clinic's new client.</p>
+                <h2 className="fw-bold mb-1">{isEditMode ? 'Edit Owner' : 'Register New Owner'}</h2>
+                <p className="text-muted">
+                  {isEditMode
+                    ? 'Update the owner\'s contact information.'
+                    : 'Enter contact information for the clinic\'s new client.'}
+                </p>
               </div>
 
               {error && <div className="alert alert-danger small mb-4">{error}</div>}
@@ -61,13 +99,13 @@ const OwnerForm = () => {
                     <span className="input-group-text bg-light border-end-0">
                       <User size={18} className="text-muted" />
                     </span>
-                    <input 
-                      name="full_name" 
+                    <input
+                      name="full_name"
                       className="form-control bg-light border-start-0"
                       placeholder="e.g. John Doe"
-                      value={formData.full_name} 
-                      onChange={handleChange} 
-                      required 
+                      value={formData.full_name}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
@@ -78,14 +116,14 @@ const OwnerForm = () => {
                     <span className="input-group-text bg-light border-end-0">
                       <Mail size={18} className="text-muted" />
                     </span>
-                    <input 
-                      type="email" 
-                      name="email" 
+                    <input
+                      type="email"
+                      name="email"
                       inputMode="email"
                       className="form-control bg-light border-start-0"
                       placeholder="john@example.com"
-                      value={formData.email} 
-                      onChange={handleChange} 
+                      value={formData.email}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -96,15 +134,15 @@ const OwnerForm = () => {
                     <span className="input-group-text bg-light border-end-0">
                       <Phone size={18} className="text-muted" />
                     </span>
-                    <input 
+                    <input
                       type="tel"
-                      name="phone_number" 
+                      name="phone_number"
                       inputMode="tel"
                       className="form-control bg-light border-start-0"
                       placeholder="+62 812..."
-                      value={formData.phone_number} 
-                      onChange={handleChange} 
-                      required 
+                      value={formData.phone_number}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
@@ -115,28 +153,32 @@ const OwnerForm = () => {
                     <span className="input-group-text bg-light border-end-0 align-items-start pt-2">
                       <MapPin size={18} className="text-muted" />
                     </span>
-                    <textarea 
-                      name="address" 
+                    <textarea
+                      name="address"
                       rows="3"
                       className="form-control bg-light border-start-0"
                       placeholder="Complete street address..."
-                      value={formData.address} 
-                      onChange={handleChange} 
+                      value={formData.address}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
 
                 <div className="d-grid gap-2">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="btn btn-primary py-2 fw-bold shadow-sm"
                     disabled={loading || !navigator.onLine}
                   >
-                    {loading ? 'Mendaftarkan...' : (!navigator.onLine ? 'Mode Offline (Baca Saja)' : 'Daftarkan Pemilik')}
+                    {loading
+                      ? 'Saving...'
+                      : (!navigator.onLine
+                        ? 'Mode Offline (Baca Saja)'
+                        : (isEditMode ? 'Update Owner' : 'Register Owner'))}
                   </button>
-                  <button 
-                    type="button" 
-                    className="btn btn-link text-muted" 
+                  <button
+                    type="button"
+                    className="btn btn-link text-muted"
                     onClick={() => navigate('/owners')}
                   >
                     Cancel
