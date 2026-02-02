@@ -1,12 +1,13 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import date, datetime
 from typing import Optional
+from app.models.patient import PatientGender
 
 class PatientBase(BaseModel):
     name: str
     species: str
     breed: Optional[str] = None
-    gender: Optional[str] = None
+    gender: Optional[PatientGender] = None
     date_of_birth: Optional[date] = None
 
 class PatientCreate(PatientBase):

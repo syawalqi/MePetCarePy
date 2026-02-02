@@ -1,7 +1,13 @@
+import enum
 from datetime import date
-from sqlalchemy import Integer, String, ForeignKey, Date
+from sqlalchemy import Integer, String, ForeignKey, Date, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base, TimestampMixin, SoftDeleteMixin
+
+class PatientGender(str, enum.Enum):
+    MALE = "Male"
+    FEMALE = "Female"
+    UNKNOWN = "Unknown"
 
 class Patient(Base, TimestampMixin, SoftDeleteMixin):
     __tablename__ = "patients"
@@ -10,7 +16,7 @@ class Patient(Base, TimestampMixin, SoftDeleteMixin):
     name: Mapped[str] = mapped_column(String, index=True)
     species: Mapped[str] = mapped_column(String)
     breed: Mapped[str] = mapped_column(String, nullable=True)
-    gender: Mapped[str] = mapped_column(String, nullable=True)
+    gender: Mapped[PatientGender] = mapped_column(SQLEnum(PatientGender, name="patient_gender"), nullable=True)
     date_of_birth: Mapped[date] = mapped_column(Date, nullable=True)
     owner_id: Mapped[int] = mapped_column(Integer, ForeignKey("owners.id"))
 
