@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
@@ -8,6 +8,7 @@ from app.crud import invoice as crud_invoice
 from app.dependencies import check_role
 from app.models.user import UserRole
 from app.logger import log_action
+from app.limiter import limiter, get_dynamic_limit
 
 router = APIRouter(prefix="/invoices", tags=["invoices"])
 
@@ -15,7 +16,9 @@ router = APIRouter(prefix="/invoices", tags=["invoices"])
 ALL_STAFF = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
 
 @router.post("/", response_model=InvoiceRead, status_code=status.HTTP_201_CREATED)
+@limiter.limit(get_dynamic_limit)
 def create_invoice(
+    request: Request,
     invoice: InvoiceCreate, 
     db: Session = Depends(get_db),
     current_profile = Depends(check_role(ALL_STAFF))
@@ -36,7 +39,9 @@ def create_invoice(
     return db_invoice
 
 @router.get("/", response_model=List[InvoiceRead])
+@limiter.limit(get_dynamic_limit)
 def read_invoices(
+    request: Request,
     skip: int = 0, 
     limit: int = 100, 
     db: Session = Depends(get_db),
@@ -45,7 +50,9 @@ def read_invoices(
     return crud_invoice.get_invoices(db, skip=skip, limit=limit)
 
 @router.get("/{invoice_id}", response_model=InvoiceRead)
+@limiter.limit(get_dynamic_limit)
 def read_invoice(
+    request: Request,
     invoice_id: int, 
     db: Session = Depends(get_db),
     _ = Depends(check_role(ALL_STAFF))
@@ -56,7 +63,9 @@ def read_invoice(
     return db_invoice
 
 @router.patch("/{invoice_id}/status", response_model=InvoiceRead)
+@limiter.limit(get_dynamic_limit)
 def update_status(
+    request: Request,
     invoice_id: int, 
     update: InvoiceUpdate, 
     db: Session = Depends(get_db),
@@ -87,7 +96,9 @@ def update_status(
     return db_invoice
 
 @router.delete("/{invoice_id}", response_model=InvoiceRead)
+@limiter.limit(get_dynamic_limit)
 def delete_invoice(
+    request: Request,
     invoice_id: int,
     db: Session = Depends(get_db),
     current_profile = Depends(check_role([UserRole.SUPERADMIN]))
@@ -111,7 +122,9 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
 @router.get("/reports/monthly", status_code=status.HTTP_200_OK)
+@limiter.limit(get_dynamic_limit)
 def get_monthly_summary(
+    request: Request,
     year: int, 
     month: int, 
     db: Session = Depends(get_db),
@@ -120,7 +133,9 @@ def get_monthly_summary(
     return crud_invoice.get_monthly_report(db, year=year, month=month)
 
 @router.get("/reports/monthly/pdf")
+@limiter.limit(get_dynamic_limit)
 def export_monthly_report_pdf(
+    request: Request,
     year: int, 
     month: int, 
     db: Session = Depends(get_db),

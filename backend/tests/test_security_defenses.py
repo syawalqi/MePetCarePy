@@ -8,10 +8,11 @@ def test_security_headers(client):
     assert "Content-Security-Policy" in response.headers
 
 def test_rate_limiting_root(client):
-    # We defined 5/minute for root in main.py.
-    # Since other tests might have run, we just verify that 429 is reachable.
+    # We defined 100/minute for authenticated users (default).
+    # We loop enough times to trigger 429.
     codes = []
-    for _ in range(10):
+    # Loop 110 times to exceed 100
+    for _ in range(110):
         response = client.get("/")
         codes.append(response.status_code)
     

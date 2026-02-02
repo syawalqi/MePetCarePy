@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
@@ -7,6 +7,7 @@ from app.crud import medical_record as crud_mr
 from app.dependencies import check_role
 from app.models.user import UserRole
 from app.logger import log_action
+from app.limiter import limiter, get_dynamic_limit
 
 router = APIRouter(prefix="/medical-records", tags=["medical-records"])
 
@@ -15,7 +16,9 @@ CLINICAL_STAFF = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINA
 ALL_STAFF = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
 
 @router.post("/", response_model=MedicalRecordRead, status_code=status.HTTP_201_CREATED)
+@limiter.limit(get_dynamic_limit)
 def create_medical_record(
+    request: Request,
     record: MedicalRecordCreate, 
     db: Session = Depends(get_db),
     current_profile = Depends(check_role(CLINICAL_STAFF))
@@ -32,7 +35,9 @@ def create_medical_record(
     return db_record
 
 @router.get("/", response_model=List[MedicalRecordRead])
+@limiter.limit(get_dynamic_limit)
 def read_medical_records(
+    request: Request,
     skip: int = 0, 
     limit: int = 100, 
     db: Session = Depends(get_db),
@@ -41,7 +46,9 @@ def read_medical_records(
     return crud_mr.get_medical_records(db, skip=skip, limit=limit)
 
 @router.get("/patient/{patient_id}", response_model=List[MedicalRecordRead])
+@limiter.limit(get_dynamic_limit)
 def read_patient_history(
+    request: Request,
     patient_id: int, 
     db: Session = Depends(get_db),
     _ = Depends(check_role(ALL_STAFF))
@@ -49,7 +56,9 @@ def read_patient_history(
     return crud_mr.get_patient_history(db, patient_id=patient_id)
 
 @router.get("/{record_id}", response_model=MedicalRecordRead)
+@limiter.limit(get_dynamic_limit)
 def read_medical_record(
+    request: Request,
     record_id: int, 
     db: Session = Depends(get_db),
     _ = Depends(check_role(ALL_STAFF))
@@ -60,7 +69,9 @@ def read_medical_record(
     return db_record
 
 @router.put("/{record_id}", response_model=MedicalRecordRead)
+@limiter.limit(get_dynamic_limit)
 def update_medical_record(
+    request: Request,
     record_id: int, 
     record: MedicalRecordUpdate, 
     db: Session = Depends(get_db),
@@ -81,7 +92,9 @@ def update_medical_record(
     return db_record
 
 @router.delete("/{record_id}", response_model=MedicalRecordRead)
+@limiter.limit(get_dynamic_limit)
 def delete_medical_record(
+    request: Request,
     record_id: int, 
     db: Session = Depends(get_db),
     current_profile = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]))

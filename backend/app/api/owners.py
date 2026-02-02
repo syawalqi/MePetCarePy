@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
@@ -7,6 +7,7 @@ from app.crud import owner as crud_owner
 from app.dependencies import check_role
 from app.models.user import UserRole
 from app.logger import log_action
+from app.limiter import limiter, get_dynamic_limit
 
 router = APIRouter(prefix="/owners", tags=["owners"])
 
@@ -16,7 +17,9 @@ MANAGEMENT = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.SUPPORT_STAF
 ADMIN_ONLY = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]
 
 @router.post("/", response_model=OwnerRead, status_code=status.HTTP_201_CREATED)
+@limiter.limit(get_dynamic_limit)
 def create_owner(
+    request: Request,
     owner: OwnerCreate, 
     db: Session = Depends(get_db),
     current_profile = Depends(check_role(MANAGEMENT))
@@ -33,7 +36,9 @@ def create_owner(
     return db_owner
 
 @router.get("/", response_model=List[OwnerRead])
+@limiter.limit(get_dynamic_limit)
 def read_owners(
+    request: Request,
     skip: int = 0, 
     limit: int = 100, 
     db: Session = Depends(get_db),
@@ -42,7 +47,9 @@ def read_owners(
     return crud_owner.get_owners(db, skip=skip, limit=limit)
 
 @router.get("/search/", response_model=List[OwnerRead])
+@limiter.limit(get_dynamic_limit)
 def search_owners(
+    request: Request,
     query: str, 
     db: Session = Depends(get_db),
     _ = Depends(check_role(ALL_STAFF))
@@ -50,7 +57,9 @@ def search_owners(
     return crud_owner.search_owners(db, query=query)
 
 @router.get("/{owner_id}", response_model=OwnerRead)
+@limiter.limit(get_dynamic_limit)
 def read_owner(
+    request: Request,
     owner_id: int, 
     db: Session = Depends(get_db),
     _ = Depends(check_role(ALL_STAFF))
@@ -61,7 +70,9 @@ def read_owner(
     return db_owner
 
 @router.put("/{owner_id}", response_model=OwnerRead)
+@limiter.limit(get_dynamic_limit)
 def update_owner(
+    request: Request,
     owner_id: int, 
     owner: OwnerUpdate, 
     db: Session = Depends(get_db),
@@ -82,7 +93,9 @@ def update_owner(
     return db_owner
 
 @router.delete("/{owner_id}", response_model=OwnerRead)
+@limiter.limit(get_dynamic_limit)
 def delete_owner(
+    request: Request,
     owner_id: int, 
     db: Session = Depends(get_db),
     current_profile = Depends(check_role(ADMIN_ONLY))
