@@ -15,11 +15,13 @@ import Layout from './components/Layout'
 import Login from './components/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
+import UpdatePrompt from './components/UpdatePrompt'
 import './App.css'
 
 function App() {
   return (
     <AuthProvider>
+      <UpdatePrompt />
       <Routes>
         <Route path="/login" element={<Login />} />
         
