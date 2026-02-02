@@ -36,13 +36,15 @@ def delete_patient(db: Session, patient_id: int):
     
     # Cascade soft delete to medical records
     from app.crud.medical_record import delete_medical_record
-    for record in db_patient.medical_records:
+    records = list(db_patient.medical_records)
+    for record in records:
         if not record.is_deleted:
             delete_medical_record(db, record.id)
             
     # Cascade soft delete to invoices
     from app.crud.invoice import delete_invoice
-    for invoice in db_patient.invoices:
+    invoices = list(db_patient.invoices)
+    for invoice in invoices:
         if not invoice.is_deleted:
             delete_invoice(db, invoice.id)
             

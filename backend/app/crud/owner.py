@@ -35,7 +35,9 @@ def delete_owner(db: Session, owner_id: int):
     
     # Cascade soft delete to patients
     from app.crud.patient import delete_patient
-    for patient in db_owner.patients:
+    # Iterate over a copy/list of IDs to avoid session iteration issues if commits happen
+    patients = list(db_owner.patients)
+    for patient in patients:
         if not patient.is_deleted:
             delete_patient(db, patient.id)
             
