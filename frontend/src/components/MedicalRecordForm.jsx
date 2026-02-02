@@ -136,13 +136,23 @@ const MedicalRecordForm = () => {
                   <textarea name="plan" rows="3" className="form-control bg-light border-0" placeholder="Enter medications, tests, or follow-up instructions..." value={formData.plan} onChange={handleChange} />
                 </div>
 
-                <div className="d-grid gap-2">
-                  <button 
-                    type="submit" 
-                    className="btn btn-primary btn-lg fw-bold shadow-sm"
-                    disabled={loading}
+                <div className="d-grid pt-3 border-top">
+                  <button
+                    type="submit"
+                    className="btn btn-primary btn-lg shadow-sm d-flex justify-content-center align-items-center gap-2"
+                    disabled={loading || !navigator.onLine}
                   >
-                    {loading ? 'Saving Record...' : 'Complete Encounter'}
+                    {loading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>Menyimpan Rekam Medis...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save size={20} />
+                        <span>{ !navigator.onLine ? 'Mode Offline (Baca Saja)' : 'Simpan Rekam Medis' }</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

@@ -128,9 +128,9 @@ const InvoiceForm = ({ patientId, medicalRecordId, onSuccess }) => {
         <button 
           type="submit" 
           className="btn btn-primary w-100 mt-4" 
-          disabled={loading}
+          disabled={loading || !navigator.onLine}
         >
-          {loading ? "Creating..." : "Create Invoice"}
+          {loading ? "Creating..." : (!navigator.onLine ? "Mode Offline (Baca Saja)" : "Create Invoice")}
         </button>
       </form>
     </div>

@@ -12,6 +12,7 @@ import {
   Menu,
   UserCircle
 } from 'lucide-react';
+import OfflineBanner from './OfflineBanner';
 
 const Layout = () => {
   const { profile, logout, deferredPrompt, handleInstallClick } = useAuth();
@@ -101,6 +102,7 @@ const Layout = () => {
 
         {/* Main Content Area */}
         <main className="col-md-9 ms-sm-auto col-lg-10 app-main d-flex flex-column min-vh-100 position-relative">
+          <OfflineBanner />
 
           {/* Mobile Header (Restored) */}
           <header className="d-md-none bg-white p-3 shadow-sm border-bottom sticky-top d-flex justify-content-between align-items-center z-3">
