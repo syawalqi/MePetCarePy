@@ -204,13 +204,13 @@ const OwnerDetails = () => {
                         <span className="badge bg-light text-secondary border px-2 py-1">{patient.breed || 'Ras Campuran'}</span>
                       </div>
                       <div className="pt-3 border-top d-flex justify-content-between align-items-center mt-auto">
-                        <div className="small text-muted">Gender: <span className="text-dark fw-medium">{patient.gender || 'N/A'}</span></div>
+                        <div className="small text-muted">Gender: <span className="text-dark fw-medium">{patient.gender || 'Tidak Ada'}</span></div>
                         {canViewRecords ? (
                           <Link to={`/patients/${patient.id}`} className="text-primary fw-bold text-decoration-none small d-flex align-items-center gap-1">
                             Buka Rekam Medis <ChevronRight size={14} />
                           </Link>
                         ) : (
-                          <span className="small text-muted fst-italic">Read-only</span>
+                          <span className="small text-muted fst-italic">Hanya Baca</span>
                         )}
                       </div>
                     </div>
