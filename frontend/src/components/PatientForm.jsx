@@ -20,6 +20,7 @@ const PatientForm = () => {
     name: '',
     species: '',
     breed: '',
+    gender: '',
     date_of_birth: '',
     owner_id: initialOwnerId,
   });
@@ -37,7 +38,7 @@ const PatientForm = () => {
     try {
       const submitData = { ...formData };
       if (!submitData.date_of_birth) delete submitData.date_of_birth;
-      
+
       await patientService.createPatient(submitData);
       if (initialOwnerId) {
         navigate(`/owners/${initialOwnerId}`);
@@ -77,13 +78,13 @@ const PatientForm = () => {
                     <span className="input-group-text bg-light border-end-0">
                       <PawPrint size={18} className="text-muted" />
                     </span>
-                    <input 
-                      name="name" 
+                    <input
+                      name="name"
                       className="form-control bg-light border-start-0"
                       placeholder="e.g. Buddy"
-                      value={formData.name} 
-                      onChange={handleChange} 
-                      required 
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
@@ -95,13 +96,13 @@ const PatientForm = () => {
                       <span className="input-group-text bg-light border-end-0">
                         <Dog size={18} className="text-muted" />
                       </span>
-                      <input 
-                        name="species" 
+                      <input
+                        name="species"
                         className="form-control bg-light border-start-0"
                         placeholder="Dog, Cat..."
-                        value={formData.species} 
-                        onChange={handleChange} 
-                        required 
+                        value={formData.species}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
                   </div>
@@ -111,12 +112,12 @@ const PatientForm = () => {
                       <span className="input-group-text bg-light border-end-0">
                         <Info size={18} className="text-muted" />
                       </span>
-                      <input 
-                        name="breed" 
+                      <input
+                        name="breed"
                         className="form-control bg-light border-start-0"
                         placeholder="Golden Retriever..."
-                        value={formData.breed} 
-                        onChange={handleChange} 
+                        value={formData.breed}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -128,27 +129,42 @@ const PatientForm = () => {
                     <span className="input-group-text bg-light border-end-0">
                       <Calendar size={18} className="text-muted" />
                     </span>
-                    <input 
-                      type="date" 
-                      name="date_of_birth" 
+                    <input
+                      type="date"
+                      name="date_of_birth"
                       className="form-control bg-light border-start-0"
-                      value={formData.date_of_birth} 
-                      onChange={handleChange} 
+                      value={formData.date_of_birth}
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
 
+                <div className="mb-4">
+                  <label className="form-label small fw-bold uppercase">Gender</label>
+                  <select
+                    name="gender"
+                    className="form-select bg-light"
+                    value={formData.gender}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Gender...</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Unknown">Unknown</option>
+                  </select>
+                </div>
+
                 <div className="d-grid gap-2">
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="btn btn-primary py-2 fw-bold shadow-sm"
                     disabled={loading || !navigator.onLine}
                   >
                     {loading ? 'Menambahkan...' : (!navigator.onLine ? 'Mode Offline (Baca Saja)' : 'Daftarkan Pasien')}
                   </button>
-                  <button 
-                    type="button" 
-                    className="btn btn-link text-muted" 
+                  <button
+                    type="button"
+                    className="btn btn-link text-muted"
                     onClick={() => navigate(-1)}
                   >
                     Cancel

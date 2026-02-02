@@ -99,6 +99,11 @@ const PatientDetails = () => {
               </div>
 
               <div className="mb-4">
+                <label className="text-uppercase text-muted fw-bold x-small mb-1" style={{ fontSize: '0.7rem' }}>Gender</label>
+                <div className="fw-medium text-dark">{patient.gender || '-'}</div>
+              </div>
+
+              <div className="mb-4">
                 <label className="text-uppercase text-muted fw-bold x-small mb-1 d-flex align-items-center gap-1" style={{ fontSize: '0.7rem' }}>
                   <Calendar size={12} />
                   <span>Tanggal Lahir</span>

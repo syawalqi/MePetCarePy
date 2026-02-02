@@ -6,6 +6,7 @@ class PatientBase(BaseModel):
     name: str
     species: str
     breed: Optional[str] = None
+    gender: Optional[str] = None
     date_of_birth: Optional[date] = None
 
 class PatientCreate(PatientBase):
@@ -15,6 +16,7 @@ class PatientUpdate(BaseModel):
     name: Optional[str] = None
     species: Optional[str] = None
     breed: Optional[str] = None
+    gender: Optional[str] = None
     date_of_birth: Optional[date] = None
 
 class PatientRead(PatientBase):
