@@ -2,11 +2,11 @@
 .env
 .env.local
 .env.*.local
-backend/.env
-frontend/.env.local
+**/.env
+**/.env.local
 
 # Python
-__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 .venv/
@@ -18,9 +18,8 @@ dist/
 build/
 
 # Node.js
-node_modules/
-frontend/node_modules/
-frontend/dist/
+**/node_modules/
+**/dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -28,10 +27,7 @@ yarn-error.log*
 # Databases (Local)
 *.db
 *.sqlite3
-test_api.db
-test_shared.db
-test_patient.db
-test_patient_api.db
+test_*.db
 
 # macOS System Files
 .DS_Store
@@ -40,17 +36,10 @@ test_patient_api.db
 .vscode/
 .idea/
 
-# Diagnostic and Migration Scripts
-scripts/check_public_tables.py
-scripts/check_rls_status.py
-scripts/test_db_conn.py
-scripts/test_direct_psycopg2.py
-scripts/test_supabase_api.py
-scripts/migrate_profiles.py
-scripts/migrate_medical_records.py
-scripts/migrate_billing.py
-scripts/test_invoicing.py
-scripts/migrate_to_supabase.py
+# Diagnostic and Migration Scripts (Ignored ones)
+scripts/check_*.py
+scripts/test_*.py
+scripts/migrate_*.py
 scripts/get_token.py
 # scripts/seed_admin.py # Kept as tracked utility
 
