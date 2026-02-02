@@ -24,11 +24,11 @@ const Layout = () => {
 
   // Localized Menu Items (Bahasa Indonesia)
   const menuItems = [
-    { name: 'Beranda', path: '/', icon: <Home size={24} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
-    { name: 'Pemilik', path: '/owners', icon: <Users size={24} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
-    { name: 'Pasien', path: '/patients', icon: <PawPrint size={24} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
-    { name: 'Staf', path: '/staff', icon: <UserCog size={24} />, roles: ['ADMINISTRATOR'] },
-    { name: 'Keuangan', path: '/reports', icon: <BarChart3 size={24} />, roles: ['ADMINISTRATOR'] },
+    { name: 'Beranda', path: '/', icon: <Home size={24} />, roles: ['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
+    { name: 'Pemilik', path: '/owners', icon: <Users size={24} />, roles: ['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
+    { name: 'Pasien', path: '/patients', icon: <PawPrint size={24} />, roles: ['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
+    { name: 'Staf', path: '/staff', icon: <UserCog size={24} />, roles: ['SUPERADMIN', 'ADMINISTRATOR'] },
+    { name: 'Keuangan', path: '/reports', icon: <BarChart3 size={24} />, roles: ['SUPERADMIN', 'ADMINISTRATOR'] },
   ];
 
   const filteredMenu = menuItems.filter(item => item.roles.includes(profile?.role));
