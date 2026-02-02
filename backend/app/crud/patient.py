@@ -31,8 +31,23 @@ def delete_patient(db: Session, patient_id: int):
     db_patient = get_patient(db, patient_id)
     if not db_patient:
         return None
+    
+    now = datetime.now(UTC)
+    
+    # Cascade soft delete to medical records
+    from app.crud.medical_record import delete_medical_record
+    for record in db_patient.medical_records:
+        if not record.is_deleted:
+            delete_medical_record(db, record.id)
+            
+    # Cascade soft delete to invoices
+    from app.crud.invoice import delete_invoice
+    for invoice in db_patient.invoices:
+        if not invoice.is_deleted:
+            delete_invoice(db, invoice.id)
+            
     db_patient.is_deleted = True
-    db_patient.deleted_at = datetime.now(UTC)
+    db_patient.deleted_at = now
     db.commit()
     return db_patient
 

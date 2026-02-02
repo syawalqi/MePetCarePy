@@ -30,8 +30,17 @@ def delete_owner(db: Session, owner_id: int):
     db_owner = get_owner(db, owner_id)
     if not db_owner:
         return None
+    
+    now = datetime.now(UTC)
+    
+    # Cascade soft delete to patients
+    from app.crud.patient import delete_patient
+    for patient in db_owner.patients:
+        if not patient.is_deleted:
+            delete_patient(db, patient.id)
+            
     db_owner.is_deleted = True
-    db_owner.deleted_at = datetime.now(UTC)
+    db_owner.deleted_at = now
     db.commit()
     return db_owner
 

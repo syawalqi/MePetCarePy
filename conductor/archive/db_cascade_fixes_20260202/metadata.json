@@ -1,0 +1,8 @@
+{
+  "name": "Database Cascade & Fixes",
+  "description": "Implement cascading deletes for Owners and audit database integrity constraints.",
+  "status": "active",
+  "start_date": "2026-02-03",
+  "technologies": ["PostgreSQL", "SQLAlchemy", "Supabase"],
+  "owner": "user"
+}

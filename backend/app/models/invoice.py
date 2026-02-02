@@ -19,7 +19,7 @@ class Invoice(Base, TimestampMixin, SoftDeleteMixin):
     status: Mapped[InvoiceStatus] = mapped_column(SQLEnum(InvoiceStatus, name="invoice_status"), default=InvoiceStatus.UNPAID)
     paid_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
-    patient = relationship("Patient")
+    patient = relationship("Patient", back_populates="invoices")
     medical_record = relationship("MedicalRecord")
     items = relationship("InvoiceItem", back_populates="invoice", cascade="all, delete-orphan")
 

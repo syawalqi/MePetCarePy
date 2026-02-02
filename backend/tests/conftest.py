@@ -87,6 +87,14 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 
 @pytest.fixture
+def db():
+    db = TestingSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@pytest.fixture
 def client():
     # Provide a mock token in the header for all requests
     headers = {"Authorization": "Bearer mock-token"}

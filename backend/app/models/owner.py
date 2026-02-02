@@ -11,4 +11,4 @@ class Owner(Base, TimestampMixin, SoftDeleteMixin):
     phone_number: Mapped[str] = mapped_column(String, index=True)
     address: Mapped[str] = mapped_column(Text, nullable=True)
 
-    patients = relationship("Patient", back_populates="owner")
+    patients = relationship("Patient", back_populates="owner", cascade="all, delete-orphan")

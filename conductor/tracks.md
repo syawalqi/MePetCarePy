@@ -4,6 +4,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
+- [x] **Track: Database Cascade & Fixes**
+  *Link: [./archive/db_cascade_fixes_20260202/](./archive/db_cascade_fixes_20260202/)*
 - [x] **Track: UI Bugfixes & Refinement**
   *Link: [./archive/ui_bugfixes_20260202/](./archive/ui_bugfixes_20260202/)*
 - [x] **Track: Security Hardening (Phase 2): Invoice RLS & Enhanced Auditing**

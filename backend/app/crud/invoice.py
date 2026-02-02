@@ -90,5 +90,6 @@ def delete_invoice(db: Session, invoice_id: int):
     if not db_invoice:
         return None
     db_invoice.is_deleted = True
+    db_invoice.deleted_at = datetime.now(UTC)
     db.commit()
     return db_invoice
