@@ -81,6 +81,7 @@ const OwnerForm = () => {
                     <input 
                       type="email" 
                       name="email" 
+                      inputMode="email"
                       className="form-control bg-light border-start-0"
                       placeholder="john@example.com"
                       value={formData.email} 
@@ -98,6 +99,7 @@ const OwnerForm = () => {
                     <input 
                       type="tel"
                       name="phone_number" 
+                      inputMode="tel"
                       className="form-control bg-light border-start-0"
                       placeholder="+62 812..."
                       value={formData.phone_number} 

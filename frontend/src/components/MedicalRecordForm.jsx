@@ -78,28 +78,28 @@ const MedicalRecordForm = () => {
                     <label className="form-label small fw-bold uppercase">Weight (kg)</label>
                     <div className="input-group">
                       <span className="input-group-text bg-light border-0"><Scale size={16} /></span>
-                      <input name="weight" type="number" step="0.1" className="form-control bg-light border-0" value={formData.weight} onChange={handleChange} />
+                      <input name="weight" type="number" step="0.1" inputMode="decimal" className="form-control bg-light border-0" value={formData.weight} onChange={handleChange} />
                     </div>
                   </div>
                   <div className="col-6 col-lg-12">
                     <label className="form-label small fw-bold uppercase">Temp (°F)</label>
                     <div className="input-group">
                       <span className="input-group-text bg-light border-0"><Thermometer size={16} /></span>
-                      <input name="temperature" type="number" step="0.1" className="form-control bg-light border-0" value={formData.temperature} onChange={handleChange} />
+                      <input name="temperature" type="number" step="0.1" inputMode="decimal" className="form-control bg-light border-0" value={formData.temperature} onChange={handleChange} />
                     </div>
                   </div>
                   <div className="col-6 col-lg-12">
                     <label className="form-label small fw-bold uppercase">Heart Rate</label>
                     <div className="input-group">
                       <span className="input-group-text bg-light border-0"><Heart size={16} /></span>
-                      <input name="heart_rate" type="number" className="form-control bg-light border-0" placeholder="bpm" value={formData.heart_rate} onChange={handleChange} />
+                      <input name="heart_rate" type="number" inputMode="numeric" className="form-control bg-light border-0" placeholder="bpm" value={formData.heart_rate} onChange={handleChange} />
                     </div>
                   </div>
                   <div className="col-6 col-lg-12">
                     <label className="form-label small fw-bold uppercase">Respiration</label>
                     <div className="input-group">
                       <span className="input-group-text bg-light border-0"><Wind size={16} /></span>
-                      <input name="respiration_rate" type="number" className="form-control bg-light border-0" placeholder="bpm" value={formData.respiration_rate} onChange={handleChange} />
+                      <input name="respiration_rate" type="number" inputMode="numeric" className="form-control bg-light border-0" placeholder="bpm" value={formData.respiration_rate} onChange={handleChange} />
                     </div>
                   </div>
                 </div>

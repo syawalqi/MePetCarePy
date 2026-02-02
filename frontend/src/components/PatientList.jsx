@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { patientService } from '../api/patientService';
 import { Link } from 'react-router-dom';
+import LoadingScreen from './LoadingScreen';
 import {
   PawPrint,
   Dog,
@@ -68,12 +69,7 @@ const PatientList = () => {
     return <PawPrint size={20} className="text-muted" />;
   };
 
-  if (loading) return (
-    <div className="text-center py-5">
-      <div className="spinner-border text-primary" role="status"></div>
-      <p className="mt-2">Memuat data pasien...</p>
-    </div>
-  );
+  if (loading) return <LoadingScreen message="Menyiapkan data pasien..." />;
 
   return (
     <div className="container-fluid">

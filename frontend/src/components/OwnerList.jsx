@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ownerService } from '../api/ownerService';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LoadingScreen from './LoadingScreen';
 import {
   Plus,
   User,
@@ -70,12 +71,7 @@ const OwnerList = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  if (loading) return (
-    <div className="text-center py-5">
-      <div className="spinner-border text-primary" role="status"></div>
-      <p className="mt-2">Memuat data pemilik...</p>
-    </div>
-  );
+  if (loading) return <LoadingScreen message="Membuka direktori pemilik..." />;
 
   return (
     <div className="container-fluid">
