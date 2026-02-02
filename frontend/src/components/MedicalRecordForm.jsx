@@ -47,6 +47,17 @@ const MedicalRecordForm = () => {
         }
       });
 
+      // Validation: Require at least one SOAP field
+      const hasContent = ['subjective', 'objective', 'assessment', 'plan'].some(
+        field => submitData[field] && submitData[field].trim() !== ''
+      );
+
+      if (!hasContent) {
+        setLoading(false);
+        alert("Mohon isi setidaknya satu bagian dari catatan klinis (Subjective, Objective, Assessment, atau Plan).");
+        return;
+      }
+
       await medicalRecordService.createRecord(submitData);
       navigate(`/patients/${patientId}`);
     } catch (error) {
