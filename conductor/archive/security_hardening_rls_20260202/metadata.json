@@ -1,0 +1,9 @@
+{
+  "id": "security_hardening_rls_20260202",
+  "title": "Security Hardening (Phase 2): Invoice RLS & Enhanced Auditing",
+  "status": "completed",
+  "owner": "Gemini CLI",
+  "created_at": "2026-02-02",
+  "completed_at": "2026-02-02",
+  "description": "Implementation of Row Level Security (RLS) for invoices and invoice items, along with enhanced auditing for financial transactions."
+}

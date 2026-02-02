@@ -27,7 +27,11 @@ def create_invoice(
         action="CREATE",
         entity="INVOICE",
         entity_id=str(db_invoice.id),
-        data={"total": db_invoice.total_amount}
+        data={
+            "total": db_invoice.total_amount,
+            "patient_id": db_invoice.patient_id,
+            "item_count": len(invoice.items)
+        }
     )
     return db_invoice
 
@@ -61,9 +65,13 @@ def update_status(
     if not update.status:
         raise HTTPException(status_code=400, detail="Status is required")
         
-    db_invoice = crud_invoice.update_invoice_status(db, invoice_id, update.status)
+    # Fetch current invoice to log old status
+    db_invoice = crud_invoice.get_invoice(db, invoice_id)
     if not db_invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    old_status = db_invoice.status
+    db_invoice = crud_invoice.update_invoice_status(db, invoice_id, update.status)
     
     log_action(
         user_id=current_profile.id,
@@ -71,7 +79,10 @@ def update_status(
         action="UPDATE_STATUS",
         entity="INVOICE",
         entity_id=str(invoice_id),
-        data={"new_status": update.status}
+        data={
+            "old_status": old_status,
+            "new_status": update.status
+        }
     )
     return db_invoice
 
