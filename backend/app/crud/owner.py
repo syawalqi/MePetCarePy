@@ -10,7 +10,7 @@ def get_owner(db: Session, owner_id: int):
     return db.query(Owner).filter(Owner.id == owner_id, Owner.is_deleted == False).first()
 
 def get_owners(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Owner).filter(Owner.is_deleted == False).offset(skip).limit(limit).all()
+    return db.query(Owner).filter(Owner.is_deleted == False).order_by(Owner.id.desc()).offset(skip).limit(limit).all()
 
 def create_owner(db: Session, owner: OwnerCreate):
     try:
@@ -68,4 +68,4 @@ def search_owners(db: Session, query: str):
     return db.query(Owner).filter(
         Owner.is_deleted == False,
         (Owner.full_name.ilike(f"%{query}%")) | (Owner.phone_number.ilike(f"%{query}%"))
-    ).all()
+    ).order_by(Owner.id.desc()).all()

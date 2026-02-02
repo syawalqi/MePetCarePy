@@ -12,7 +12,8 @@ import {
   Search,
   LayoutGrid,
   Table as TableIcon,
-  ChevronLeft
+  ChevronLeft,
+  ArrowDownNarrowWide
 } from 'lucide-react';
 
 const OwnerList = () => {
@@ -21,27 +22,13 @@ const OwnerList = () => {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('card'); // 'card' or 'table'
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
   const itemsPerPage = 10;
 
   const { profile } = useAuth();
   const isManagement = ['SUPERADMIN', 'ADMINISTRATOR', 'SUPPORT_STAFF'].includes(profile?.role);
 
-  // Auto-switch view mode based on screen width on mount
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setViewMode('table');
-      } else {
-        setViewMode('card');
-      }
-    };
-
-    // Initial check
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // ... (useEffect handleResize)
 
   useEffect(() => {
     loadOwners();
@@ -58,7 +45,12 @@ const OwnerList = () => {
     }
   };
 
-  const filteredOwners = owners.filter(owner =>
+  const sortedOwners = [...owners].sort((a, b) => {
+    if (sortOrder === 'newest') return b.id - a.id;
+    return a.id - b.id;
+  });
+
+  const filteredOwners = sortedOwners.filter(owner =>
     owner.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     owner.phone_number.includes(searchTerm)
   );
@@ -107,6 +99,24 @@ const OwnerList = () => {
                   setCurrentPage(1); // Reset to page 1 on search
                 }}
               />
+            </div>
+
+            {/* Sort Order */}
+            <div className="d-flex align-items-center gap-2">
+              <div className="input-group input-group-sm border-0 bg-light rounded" style={{ width: 'auto' }}>
+                <span className="input-group-text bg-transparent border-0 pe-0">
+                  <ArrowDownNarrowWide size={16} className="text-muted" />
+                </span>
+                <select 
+                  className="form-select border-0 bg-transparent shadow-none small"
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  style={{ cursor: 'pointer', fontSize: '0.85rem' }}
+                >
+                  <option value="newest">Terbaru</option>
+                  <option value="oldest">Terlama</option>
+                </select>
+              </div>
             </div>
 
             {/* View Mode Toggle */}

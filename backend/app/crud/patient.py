@@ -8,7 +8,7 @@ def get_patient(db: Session, patient_id: int):
     return db.query(Patient).filter(Patient.id == patient_id, Patient.is_deleted == False).first()
 
 def get_patients(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Patient).filter(Patient.is_deleted == False).offset(skip).limit(limit).all()
+    return db.query(Patient).filter(Patient.is_deleted == False).order_by(Patient.id.desc()).offset(skip).limit(limit).all()
 
 def create_patient(db: Session, patient: PatientCreate):
     db_patient = Patient(**patient.model_dump())
@@ -57,4 +57,4 @@ def search_patients(db: Session, query: str):
     return db.query(Patient).join(Owner).filter(
         Patient.is_deleted == False,
         (Patient.name.ilike(f"%{query}%")) | (Owner.phone_number.ilike(f"%{query}%"))
-    ).all()
+    ).order_by(Patient.id.desc()).all()

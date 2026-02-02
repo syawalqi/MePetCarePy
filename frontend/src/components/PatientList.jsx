@@ -10,7 +10,8 @@ import {
   ChevronRight,
   LayoutGrid,
   Table as TableIcon,
-  ChevronLeft
+  ChevronLeft,
+  ArrowDownNarrowWide
 } from 'lucide-react';
 
 const PatientList = () => {
@@ -19,6 +20,7 @@ const PatientList = () => {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('card');
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -49,7 +51,12 @@ const PatientList = () => {
     }
   };
 
-  const filteredPatients = patients.filter(p =>
+  const sortedPatients = [...patients].sort((a, b) => {
+    if (sortOrder === 'newest') return b.id - a.id;
+    return a.id - b.id;
+  });
+
+  const filteredPatients = sortedPatients.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.species.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -97,6 +104,25 @@ const PatientList = () => {
                 }}
               />
             </div>
+
+            {/* Sort Order */}
+            <div className="d-flex align-items-center gap-2">
+              <div className="input-group input-group-sm border-0 bg-light rounded" style={{ width: 'auto' }}>
+                <span className="input-group-text bg-transparent border-0 pe-0">
+                  <ArrowDownNarrowWide size={16} className="text-muted" />
+                </span>
+                <select 
+                  className="form-select border-0 bg-transparent shadow-none small"
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  style={{ cursor: 'pointer', fontSize: '0.85rem' }}
+                >
+                  <option value="newest">Terbaru</option>
+                  <option value="oldest">Terlama</option>
+                </select>
+              </div>
+            </div>
+
             {/* View Mode Toggle */}
             <div className="d-flex bg-light rounded p-1 align-self-end align-self-md-auto">
               <button
