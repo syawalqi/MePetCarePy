@@ -36,6 +36,7 @@ To provide a structured, reliable, and extensible web-based management system fo
 *   **Medical Records:** Tracking patient health history, including vaccinations, SOAP (Subjective, Objective, Assessment, Plan) notes, and full medical history.
 *   **Authentication and RBAC:** Secure staff authentication via Supabase with role-based access control (Administrator, Veterinarian, Support Staff) to ensure data privacy and workflow integrity.
 *   **Appointment Management:** (Planned) Future support for scheduling and calendar integrations.
+*   **Progressive Web App (PWA):** Mobile-installable application with offline read-only support for critical clinic data.
 
 ## Target Users
 *   **Veterinarians:** Accessing and updating medical records and patient history.
@@ -45,5 +46,6 @@ To provide a structured, reliable, and extensible web-based management system fo
 ## Design Principles
 *   **Single Source of Truth:** Business logic resides solely in the backend.
 *   **Backend-First Correctness:** Prioritizing data integrity and validation at the API level.
-*   **Future Extensibility:** Architecture designed to support future mobile applications and third-party integrations.
+*   **Mobile-First PWA:** A native-like mobile experience that works across platforms without separate app store deployments.
+*   **Offline Availability:** Basic read-only access to cached data ensuring continuity during intermittent connectivity.
 *   **Reliability:** Utilizing soft deletes for critical medical and patient data to prevent accidental loss.

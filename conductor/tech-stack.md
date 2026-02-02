@@ -11,7 +11,8 @@
 *   **Framework:** React
 *   **State Management:** React Context API or similar lightweight solution (implied for small/medium app)
 *   **API Client:** Axios, Supabase JavaScript Client
-*   **UI/Styling:** CSS Modules or Styled Components (aligned with custom design/Material reference)
+*   **UI/Styling:** Bootstrap 5, Lucide Icons, and custom CSS variables.
+*   **PWA:** `vite-plugin-pwa` for manifest management and service worker strategies.
 
 ## Infrastructure & DevOps
 *   **Services:** Supabase is used for database, authentication, and storage services.
