@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { patientService } from '../api/patientService';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PawPrint, Info, Calendar, User, ArrowLeft, Dog } from 'lucide-react';
@@ -8,6 +8,13 @@ const PatientForm = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const initialOwnerId = queryParams.get('owner_id') || '';
+
+  useEffect(() => {
+    if (!initialOwnerId) {
+      // Enforce: Must come from Owner Details
+      navigate('/owners');
+    }
+  }, [initialOwnerId, navigate]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -129,24 +136,6 @@ const PatientForm = () => {
                       onChange={handleChange} 
                     />
                   </div>
-                </div>
-
-                <div className="mb-4">
-                  <label className="form-label small fw-bold uppercase">Owner ID</label>
-                  <div className="input-group">
-                    <span className="input-group-text bg-light border-end-0">
-                      <User size={18} className="text-muted" />
-                    </span>
-                    <input 
-                      name="owner_id" 
-                      className="form-control bg-light border-start-0"
-                      value={formData.owner_id} 
-                      onChange={handleChange} 
-                      required 
-                      disabled={!!initialOwnerId} 
-                    />
-                  </div>
-                  {initialOwnerId && <div className="form-text small text-muted">Registering for existing owner #{initialOwnerId}</div>}
                 </div>
 
                 <div className="d-grid gap-2">

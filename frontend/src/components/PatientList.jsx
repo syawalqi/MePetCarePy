@@ -74,16 +74,9 @@ const PatientList = () => {
   return (
     <div className="container-fluid">
       {/* Header */}
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-        <div>
-          <h2 className="fw-bold mb-1">Registri Pasien</h2>
-          <p className="text-muted mb-0 small">Daftar lengkap hewan yang terdaftar di klinik</p>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2 className="fw-bold m-0">Patients</h2>
         </div>
-        <Link to="/patients/new" className="btn btn-primary d-flex align-items-center justify-content-center gap-2 px-4 shadow-sm">
-          <PawPrint size={18} />
-          <span>Pasien Baru</span>
-        </Link>
-      </div>
 
       {/* Controls */}
       <div className="card shadow-sm border-0 mb-4 bg-white">
