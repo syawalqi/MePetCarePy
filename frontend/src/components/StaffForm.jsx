@@ -37,7 +37,7 @@ const StaffForm = () => {
     <div className="container-fluid pb-5">
       <div className="row justify-content-center">
         <div className="col-lg-6 col-md-8">
-
+          
           <button onClick={() => navigate('/staff')} className="btn btn-link text-muted d-flex align-items-center gap-2 p-0 mb-4 text-decoration-none">
             <ArrowLeft size={16} />
             <span>Kembali ke Daftar Staf</span>
@@ -54,21 +54,21 @@ const StaffForm = () => {
 
             <div className="card-body p-4">
               {error && <div className="alert alert-danger mb-4">{error}</div>}
-
+              
               <form onSubmit={handleSubmit}>
-
+                
                 <div className="mb-3">
                   <label className="form-label small fw-bold text-uppercase text-muted">Nama Lengkap</label>
                   <div className="input-group">
                     <span className="input-group-text bg-light text-muted border-end-0"><User size={18} /></span>
-                    <input
-                      type="text"
-                      className="form-control border-start-0 ps-1"
-                      name="full_name"
+                    <input 
+                      type="text" 
+                      className="form-control border-start-0 ps-1" 
+                      name="full_name" 
                       placeholder="Nama lengkap staf..."
-                      value={formData.full_name}
-                      onChange={handleChange}
-                      required
+                      value={formData.full_name} 
+                      onChange={handleChange} 
+                      required 
                     />
                   </div>
                 </div>
@@ -77,14 +77,14 @@ const StaffForm = () => {
                   <label className="form-label small fw-bold text-uppercase text-muted">Alamat Email</label>
                   <div className="input-group">
                     <span className="input-group-text bg-light text-muted border-end-0"><Mail size={18} /></span>
-                    <input
-                      type="email"
-                      className="form-control border-start-0 ps-1"
-                      name="email"
+                    <input 
+                      type="email" 
+                      className="form-control border-start-0 ps-1" 
+                      name="email" 
                       placeholder="nama@klinik.com"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
+                      value={formData.email} 
+                      onChange={handleChange} 
+                      required 
                     />
                   </div>
                 </div>
@@ -93,15 +93,16 @@ const StaffForm = () => {
                   <label className="form-label small fw-bold text-uppercase text-muted">Peran (Role)</label>
                   <div className="input-group">
                     <span className="input-group-text bg-light text-muted border-end-0"><Shield size={18} /></span>
-                    <select
-                      name="role"
+                    <select 
+                      name="role" 
                       className="form-select border-start-0 ps-1"
-                      value={formData.role}
+                      value={formData.role} 
                       onChange={handleChange}
                     >
                       <option value="SUPPORT_STAFF">Staf Pendukung (Resepsionis/Admin)</option>
                       <option value="VETERINARIAN">Dokter Hewan</option>
                       <option value="ADMINISTRATOR">Administrator Sistem</option>
+                      <option value="SUPERADMIN">Super Admin (Akses Penuh)</option>
                     </select>
                   </div>
                 </div>
@@ -110,14 +111,14 @@ const StaffForm = () => {
                   <label className="form-label small fw-bold text-uppercase text-muted">Kata Sandi Sementara</label>
                   <div className="input-group">
                     <span className="input-group-text bg-light text-muted border-end-0"><Key size={18} /></span>
-                    <input
-                      type="password"
+                    <input 
+                      type="password" 
                       className="form-control border-start-0 ps-1"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      required
-                      minLength="6"
+                      name="password" 
+                      value={formData.password} 
+                      onChange={handleChange} 
+                      required 
+                      minLength="6" 
                       placeholder="Minimal 6 karakter..."
                     />
                   </div>

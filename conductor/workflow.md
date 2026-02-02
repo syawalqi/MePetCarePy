@@ -8,6 +8,7 @@
 4. **High Code Coverage:** Aim for >80% code coverage for all modules
 5. **User Experience First:** Every decision should prioritize user experience
 6. **Non-Interactive & CI-Aware:** Prefer non-interactive commands. Use `CI=true` for watch-mode tools (tests, linters) to ensure single execution.
+7. **Explicit Confirmation for Live Changes:** For any action that modifies the live system state outside of the codebase (e.g., applying SQL migrations, changing cloud environment variables, or executing destructive shell commands), you **must** provide the instructions/files to the user and ask for explicit confirmation before considering the task complete.
 
 ## Task Workflow
 

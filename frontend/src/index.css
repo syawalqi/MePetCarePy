@@ -94,10 +94,7 @@ body {
   color: var(--primary-color);
 }
 
-.mobile-bottom-spacer {
-  height: 80px;
-  /* Space for bottom nav */
-}
+/* Spacer handled inline in Layout.jsx */
 
 /* Cards & Utilities */
 .card {

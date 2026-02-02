@@ -11,9 +11,9 @@ from app.logger import log_action
 router = APIRouter(prefix="/patients", tags=["patients"])
 
 # Access aliases
-ALL_STAFF = [UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
-MANAGEMENT = [UserRole.ADMINISTRATOR, UserRole.SUPPORT_STAFF]
-ADMIN_ONLY = [UserRole.ADMINISTRATOR]
+ALL_STAFF = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
+MANAGEMENT = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.SUPPORT_STAFF]
+ADMIN_ONLY = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]
 
 @router.post("/", response_model=PatientRead, status_code=status.HTTP_201_CREATED)
 def create_patient(

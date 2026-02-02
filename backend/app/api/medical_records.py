@@ -11,8 +11,8 @@ from app.logger import log_action
 router = APIRouter(prefix="/medical-records", tags=["medical-records"])
 
 # RBAC Permissions
-CLINICAL_STAFF = [UserRole.ADMINISTRATOR, UserRole.VETERINARIAN]
-ALL_STAFF = [UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
+CLINICAL_STAFF = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN]
+ALL_STAFF = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
 
 @router.post("/", response_model=MedicalRecordRead, status_code=status.HTTP_201_CREATED)
 def create_medical_record(
@@ -84,7 +84,7 @@ def update_medical_record(
 def delete_medical_record(
     record_id: int, 
     db: Session = Depends(get_db),
-    current_profile = Depends(check_role([UserRole.ADMINISTRATOR]))
+    current_profile = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]))
 ):
     db_record = crud_mr.delete_medical_record(db, record_id)
     if db_record is None:

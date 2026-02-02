@@ -14,10 +14,10 @@ const DashboardHome = () => {
   const { profile } = useAuth();
 
   const actions = [
-    { title: 'Pemilik Baru', path: '/owners/new', icon: <Users className="text-primary" />, roles: ['ADMINISTRATOR', 'SUPPORT_STAFF'] },
-    { title: 'Pasien Baru', path: '/patients/new', icon: <PawPrint className="text-success" />, roles: ['ADMINISTRATOR', 'SUPPORT_STAFF'] },
-    { title: 'Kelola Staf', path: '/staff', icon: <ClipboardList className="text-info" />, roles: ['ADMINISTRATOR'] },
-    { title: 'Laporan Keuangan', path: '/reports', icon: <BadgeDollarSign className="text-warning" />, roles: ['ADMINISTRATOR'] },
+    { title: 'Pemilik Baru', path: '/owners/new', icon: <Users className="text-primary" />, roles: ['SUPERADMIN', 'ADMINISTRATOR', 'SUPPORT_STAFF'] },
+    { title: 'Pasien Baru', path: '/patients/new', icon: <PawPrint className="text-success" />, roles: ['SUPERADMIN', 'ADMINISTRATOR', 'SUPPORT_STAFF'] },
+    { title: 'Kelola Staf', path: '/staff', icon: <ClipboardList className="text-info" />, roles: ['SUPERADMIN', 'ADMINISTRATOR'] },
+    { title: 'Laporan Keuangan', path: '/reports', icon: <BadgeDollarSign className="text-warning" />, roles: ['SUPERADMIN', 'ADMINISTRATOR'] },
   ];
 
   const filteredActions = actions.filter(action => action.roles.includes(profile?.role));
@@ -32,15 +32,15 @@ const DashboardHome = () => {
       {/* Action Cards */}
       <div className="row g-3 g-md-4 mb-5">
         {filteredActions.map((action) => (
-          <div className="col-6 col-md-6 col-lg-3" key={action.path}>
+          <div className="col-6 col-sm-6 col-md-6 col-lg-3" key={action.path}>
             <Link to={action.path} className="text-decoration-none text-dark">
               <div className="card h-100 p-3 p-md-4 text-center border-0 shadow-sm hover-lift transition-all bg-white">
                 <div className="mb-3 d-flex justify-content-center">
-                  <div className="p-3 rounded-circle bg-light bg-opacity-50">
-                    {React.cloneElement(action.icon, { size: 32 })}
+                  <div className="p-3 rounded-circle bg-light bg-opacity-50 text-wrap">
+                    {React.cloneElement(action.icon, { size: 28 })}
                   </div>
                 </div>
-                <h6 className="fw-bold mb-0 text-truncate">{action.title}</h6>
+                <h6 className="fw-bold mb-0 small text-wrap">{action.title}</h6>
               </div>
             </Link>
           </div>

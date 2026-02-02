@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { invoiceService } from '../api/invoiceService';
-import { CreditCard, Calendar, CheckCircle2, Clock, FileText } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { CreditCard, Calendar, CheckCircle2, Clock, FileText, Trash2 } from 'lucide-react';
 
 const InvoiceList = ({ patientId }) => {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { profile } = useAuth();
 
   useEffect(() => {
     loadInvoices();
@@ -34,9 +36,23 @@ const InvoiceList = ({ patientId }) => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("APAKAH ANDA YAKIN? Ini akan menghapus data tagihan secara permanen.")) return;
+    try {
+      await invoiceService.deleteInvoice(id);
+      loadInvoices();
+    } catch (error) {
+      alert("Gagal menghapus tagihan. Akses terbatas untuk Super Admin.");
+    }
+  };
+
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
   };
+
+  // Roles that can update status (CRU)
+  const canUpdate = ['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN'].includes(profile?.role);
+  const isSuperAdmin = profile?.role === 'SUPERADMIN';
 
   if (loading) return (
     <div className="py-5 text-center text-muted small">
@@ -66,7 +82,18 @@ const InvoiceList = ({ patientId }) => {
               <div className="card-body p-3">
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <div>
-                    <div className="fw-bold mb-1 text-dark">Tagihan #{inv.id}</div>
+                    <div className="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                      Tagihan #{inv.id}
+                      {isSuperAdmin && (
+                        <button 
+                          onClick={() => handleDelete(inv.id)}
+                          className="btn btn-link text-danger p-0 border-0"
+                          title="Hapus Tagihan"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </div>
                     <div className="text-muted x-small d-flex align-items-center gap-1" style={{ fontSize: '0.75rem' }}>
                       <Calendar size={12} />
                       <span>{new Date(inv.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
@@ -94,7 +121,7 @@ const InvoiceList = ({ patientId }) => {
                     )}
                   </div>
 
-                  {inv.status === 'UNPAID' && (
+                  {inv.status === 'UNPAID' && canUpdate && (
                     <button
                       className="btn btn-sm btn-success px-3 shadow-sm rounded-pill font-weight-medium"
                       onClick={() => handleMarkAsPaid(inv.id)}

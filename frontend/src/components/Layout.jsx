@@ -6,26 +6,29 @@ import {
   Users,
   PawPrint,
   UserCog,
-    BarChart3, 
-    LogOut,
-    Menu,
-    X,
-    PlusCircle
-  } from 'lucide-react';
-  const Layout = () => {
+  BarChart3,
+  LogOut,
+  PlusCircle,
+  Menu,
+  UserCircle
+} from 'lucide-react';
+import OfflineBanner from './OfflineBanner';
+
+const Layout = () => {
   const { profile, logout, deferredPrompt, handleInstallClick } = useAuth();
   const location = useLocation();
+  const [showMobileProfile, setShowMobileProfile] = useState(false);
 
   // Helper check for iOS PWA prompt
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
   // Localized Menu Items (Bahasa Indonesia)
   const menuItems = [
-    { name: 'Beranda', path: '/', icon: <Home size={24} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
-    { name: 'Pemilik', path: '/owners', icon: <Users size={24} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
-    { name: 'Pasien', path: '/patients', icon: <PawPrint size={24} />, roles: ['ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
-    { name: 'Staf', path: '/staff', icon: <UserCog size={24} />, roles: ['ADMINISTRATOR'] },
-    { name: 'Keuangan', path: '/reports', icon: <BarChart3 size={24} />, roles: ['ADMINISTRATOR'] },
+    { name: 'Beranda', path: '/', icon: <Home size={24} />, roles: ['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
+    { name: 'Pemilik', path: '/owners', icon: <Users size={24} />, roles: ['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
+    { name: 'Pasien', path: '/patients', icon: <PawPrint size={24} />, roles: ['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN', 'SUPPORT_STAFF'] },
+    { name: 'Staf', path: '/staff', icon: <UserCog size={24} />, roles: ['SUPERADMIN', 'ADMINISTRATOR'] },
+    { name: 'Keuangan', path: '/reports', icon: <BarChart3 size={24} />, roles: ['SUPERADMIN', 'ADMINISTRATOR'] },
   ];
 
   const filteredMenu = menuItems.filter(item => item.roles.includes(profile?.role));
@@ -72,16 +75,17 @@ import {
   );
 
   const BottomNav = () => (
-    <nav className="bottom-nav d-md-none d-flex justify-content-around align-items-center px-2">
-      {filteredMenu.slice(0, 5).map((item) => ( // Limit to 5 items for mobile spacing
+    <nav className="bottom-nav d-md-none d-flex justify-content-around align-items-center px-2 shadow-lg border-top">
+      {filteredMenu.slice(0, 5).map((item) => (
         <Link
           key={item.path}
           to={item.path}
           className={`bottom-nav-item d-flex flex-column align-items-center text-decoration-none ${location.pathname === item.path ? 'active' : ''
             }`}
+          style={{ width: '20%' }}
         >
           {React.cloneElement(item.icon, { size: 24, strokeWidth: location.pathname === item.path ? 2.5 : 2 })}
-          <span className="mt-1" style={{ fontSize: '0.7rem' }}>{item.name}</span>
+          <span className="mt-1 text-truncate w-100 text-center" style={{ fontSize: '0.65rem' }}>{item.name}</span>
         </Link>
       ))}
     </nav>
@@ -97,35 +101,69 @@ import {
         </nav>
 
         {/* Main Content Area */}
-        <main className="col-md-9 ms-sm-auto col-lg-10 app-main">
+        <main className="col-md-9 ms-sm-auto col-lg-10 app-main d-flex flex-column min-vh-100 position-relative">
+          <OfflineBanner />
 
-          {/* PWA Install Prompt (Mobile Top) */}
-          {deferredPrompt && (
-            <div className="d-md-none px-3 pt-3">
-              <button
-                onClick={handleInstallClick}
-                className="btn btn-success w-100 shadow-sm d-flex align-items-center justify-content-center gap-2"
-              >
-                <PlusCircle size={18} />
-                <span>Instal Aplikasi</span>
-              </button>
+          {/* Mobile Header (Restored) */}
+          <header className="d-md-none bg-white p-3 shadow-sm border-bottom sticky-top d-flex justify-content-between align-items-center z-3">
+            <div className="d-flex align-items-center gap-2">
+              <div className="bg-primary rounded p-1">
+                <PawPrint size={18} className="text-white" />
+              </div>
+              <h5 className="fw-bold text-primary mb-0">MePetCare</h5>
             </div>
-          )}
+
+            <button
+              className="btn btn-light rounded-circle p-2 text-primary position-relative"
+              onClick={() => setShowMobileProfile(!showMobileProfile)}
+            >
+              <UserCircle size={24} />
+            </button>
+
+            {/* Mobile Profile Dropdown */}
+            {showMobileProfile && (
+              <div className="position-absolute end-0 top-100 mt-2 me-2 bg-white shadow-lg rounded p-3 border" style={{ width: '260px', zIndex: 1050 }}>
+                <div className="mb-3 border-bottom pb-2">
+                  <div className="fw-bold text-dark">{profile.full_name}</div>
+                  <small className="text-muted d-block">{profile.role}</small>
+                </div>
+
+                {deferredPrompt && (
+                  <button
+                    onClick={() => { handleInstallClick(); setShowMobileProfile(false); }}
+                    className="btn btn-success btn-sm w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
+                  >
+                    <PlusCircle size={16} />
+                    <span>Instal Aplikasi</span>
+                  </button>
+                )}
+
+                <button
+                  onClick={() => { logout(); setShowMobileProfile(false); }}
+                  className="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
+                >
+                  <LogOut size={16} />
+                  <span>Keluar</span>
+                </button>
+              </div>
+            )}
+          </header>
 
           {/* iOS Instructions */}
           {isIOS && !deferredPrompt && (
             <div className="d-md-none px-3 pt-3">
-              <div className="alert alert-info py-2 small mb-0 text-center">
+              <div className="alert alert-info py-2 small mb-0 text-center shadow-sm border-info">
                 Tap share &amp; "Add to Home Screen"
               </div>
             </div>
           )}
 
-          <div className="container-fluid py-2 px-0 px-md-3">
+          <div className="flex-grow-1 py-3 px-3 px-md-4 bg-light">
             <Outlet />
           </div>
 
-          <div className="mobile-bottom-spacer d-md-none"></div>
+          {/* Spacer for Bottom Nav */}
+          <div className="mobile-bottom-spacer d-md-none" style={{ height: '80px', flexShrink: 0 }}></div>
         </main>
       </div>
 

@@ -25,6 +25,10 @@ const MedicalRecordForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!navigator.onLine) {
+      alert("Mode Offline: Anda tidak dapat menyimpan rekam medis saat ini.");
+      return;
+    }
     setLoading(true);
     try {
       const submitData = {
@@ -93,6 +97,7 @@ const MedicalRecordForm = () => {
                         name="weight"
                         type="number"
                         step="0.1"
+                        inputMode="decimal"
                         className="form-control border-start-0 ps-1"
                         placeholder="0.0"
                         value={formData.weight}
@@ -108,6 +113,7 @@ const MedicalRecordForm = () => {
                         name="temperature"
                         type="number"
                         step="0.1"
+                        inputMode="decimal"
                         className="form-control border-start-0 ps-1"
                         placeholder="0.0"
                         value={formData.temperature}
@@ -122,6 +128,7 @@ const MedicalRecordForm = () => {
                       <input
                         name="heart_rate"
                         type="number"
+                        inputMode="numeric"
                         className="form-control border-start-0 ps-1"
                         placeholder="bpm"
                         value={formData.heart_rate}
@@ -136,6 +143,7 @@ const MedicalRecordForm = () => {
                       <input
                         name="respiration_rate"
                         type="number"
+                        inputMode="numeric"
                         className="form-control border-start-0 ps-1"
                         placeholder="rpm"
                         value={formData.respiration_rate}
@@ -236,7 +244,7 @@ const MedicalRecordForm = () => {
                   <button
                     type="submit"
                     className="btn btn-primary btn-lg shadow-sm d-flex justify-content-center align-items-center gap-2"
-                    disabled={loading}
+                    disabled={loading || !navigator.onLine}
                   >
                     {loading ? (
                       <>
@@ -246,7 +254,7 @@ const MedicalRecordForm = () => {
                     ) : (
                       <>
                         <Save size={20} />
-                        <span>Simpan Rekam Medis</span>
+                        <span>{!navigator.onLine ? "Mode Offline (Baca Saja)" : "Simpan Rekam Medis"}</span>
                       </>
                     )}
                   </button>

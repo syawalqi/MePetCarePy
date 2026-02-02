@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { invoiceService } from '../api/invoiceService';
 import { useAuth } from '../context/AuthContext';
-import { BarChart3, Download, Calendar as CalendarIcon, Users } from 'lucide-react';
+import { BarChart3, Download, Calendar as CalendarIcon, Users, BadgeDollarSign, UserCheck } from 'lucide-react';
+import LoadingScreen from './LoadingScreen';
 
 const FinancialDashboard = () => {
   const { profile } = useAuth();
@@ -12,13 +13,13 @@ const FinancialDashboard = () => {
     month: new Date().getMonth() + 1
   });
 
-  const isAdmin = profile?.role === 'ADMINISTRATOR';
+  const hasAccess = ['SUPERADMIN', 'ADMINISTRATOR'].includes(profile?.role);
 
   useEffect(() => {
-    if (isAdmin) {
+    if (hasAccess) {
       loadStats();
     }
-  }, [isAdmin, date]);
+  }, [hasAccess, date]);
 
   const loadStats = async () => {
     setLoading(true);
@@ -51,9 +52,9 @@ const FinancialDashboard = () => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
   };
 
-  if (!isAdmin) return (
+  if (!hasAccess) return (
     <div className="container py-5 text-center">
-      <div className="alert alert-warning d-inline-block">Akses Ditolak: Diperlukan peran Administrator.</div>
+      <div className="alert alert-warning d-inline-block">Akses Ditolak: Diperlukan peran Administrator atau SuperAdmin.</div>
     </div>
   );
 
@@ -105,18 +106,15 @@ const FinancialDashboard = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-5">
-          <div className="spinner-border text-primary" role="status"></div>
-          <p className="mt-3 text-muted fw-medium">Menghitung laporan bulanan...</p>
-        </div>
+        <LoadingScreen message="Menghitung laporan bulanan..." />
       ) : stats && (
         <>
           <div className="row g-4 mb-4">
             <div className="col-md-6">
               <div className="card h-100 border-0 shadow-sm bg-primary text-white overflow-hidden">
                 <div className="card-body p-4 position-relative">
-                  <div className="position-absolute end-0 top-0 opacity-10 me-n3 mt-n3">
-                    <BarChart3 size={120} />
+                  <div className="position-absolute end-0 top-0 opacity-25 me-3 mt-3">
+                    <BadgeDollarSign size={48} />
                   </div>
                   <h6 className="text-white text-opacity-75 text-uppercase fw-bold small mb-2">Total Pendapatan Bulanan</h6>
                   <div className="display-6 fw-bold mb-0">{formatCurrency(stats.total_earnings)}</div>
@@ -124,10 +122,10 @@ const FinancialDashboard = () => {
               </div>
             </div>
             <div className="col-md-6">
-              <div className="card h-100 border-0 shadow-sm bg-white overflow-hidden">
+              <div className="card h-100 border-0 shadow-sm bg-white overflow-hidden border-start border-success border-4">
                 <div className="card-body p-4 position-relative">
-                  <div className="position-absolute end-0 top-0 opacity-10 me-n2 mt-n2 text-success">
-                    <Users size={100} />
+                  <div className="position-absolute end-0 top-0 opacity-10 me-3 mt-3 text-success">
+                    <UserCheck size={48} />
                   </div>
                   <h6 className="text-muted text-uppercase fw-bold small mb-2">Pasien Unik yang Ditagih</h6>
                   <div className="display-6 fw-bold text-dark">{stats.total_patients}</div>

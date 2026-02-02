@@ -14,7 +14,7 @@ def create_staff_user(
     staff_in: StaffCreate,
     db: Session = Depends(get_db),
     admin_client = Depends(get_admin_client),
-    _ = Depends(check_role([UserRole.ADMINISTRATOR]))
+    _ = Depends(check_role([UserRole.SUPERADMIN]))
 ):
     """
     Creates a new staff user in Supabase Auth and a corresponding entry in the public.profiles table.
@@ -55,7 +55,7 @@ def read_users(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
-    _ = Depends(check_role([UserRole.ADMINISTRATOR]))
+    _ = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]))
 ):
     return crud_user.get_profiles(db, skip=skip, limit=limit)
 
@@ -68,3 +68,28 @@ def read_user_me(
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
     return profile
+
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_staff_user(
+    user_id: str,
+    db: Session = Depends(get_db),
+    admin_client = Depends(get_admin_client),
+    current_profile = Depends(check_role([UserRole.SUPERADMIN]))
+):
+    """
+    Deletes a staff user from both Supabase Auth and the profiles table.
+    Prevent self-deletion.
+    """
+    if user_id == current_profile.id:
+        raise HTTPException(status_code=400, detail="You cannot delete your own account.")
+
+    try:
+        # 1. Delete from Supabase Auth
+        admin_client.auth.admin.delete_user(user_id)
+        
+        # 2. Delete from Profiles table
+        crud_user.delete_profile(db, user_id)
+        
+        return None
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete user: {str(e)}")

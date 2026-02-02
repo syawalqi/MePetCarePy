@@ -81,6 +81,7 @@ const OwnerForm = () => {
                     <input 
                       type="email" 
                       name="email" 
+                      inputMode="email"
                       className="form-control bg-light border-start-0"
                       placeholder="john@example.com"
                       value={formData.email} 
@@ -98,6 +99,7 @@ const OwnerForm = () => {
                     <input 
                       type="tel"
                       name="phone_number" 
+                      inputMode="tel"
                       className="form-control bg-light border-start-0"
                       placeholder="+62 812..."
                       value={formData.phone_number} 
@@ -128,9 +130,9 @@ const OwnerForm = () => {
                   <button 
                     type="submit" 
                     className="btn btn-primary py-2 fw-bold shadow-sm"
-                    disabled={loading}
+                    disabled={loading || !navigator.onLine}
                   >
-                    {loading ? 'Registering...' : 'Register Owner'}
+                    {loading ? 'Mendaftarkan...' : (!navigator.onLine ? 'Mode Offline (Baca Saja)' : 'Daftarkan Pemilik')}
                   </button>
                   <button 
                     type="button" 

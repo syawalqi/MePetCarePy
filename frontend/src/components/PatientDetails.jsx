@@ -16,7 +16,7 @@ const PatientDetails = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const { profile } = useAuth();
 
-  const canEdit = ['ADMINISTRATOR', 'VETERINARIAN'].includes(profile?.role);
+  const canEdit = ['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN'].includes(profile?.role);
 
   useEffect(() => {
     if (id) {

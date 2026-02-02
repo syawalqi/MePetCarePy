@@ -28,6 +28,10 @@ const InvoiceForm = ({ patientId, medicalRecordId, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!navigator.onLine) {
+      alert("Mode Offline: Anda tidak dapat membuat tagihan saat ini.");
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -155,7 +159,7 @@ const InvoiceForm = ({ patientId, medicalRecordId, onSuccess }) => {
             <button
               type="submit"
               className="btn btn-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2 shadow-sm"
-              disabled={loading}
+              disabled={loading || !navigator.onLine}
             >
               {loading ? (
                 <>
@@ -165,7 +169,7 @@ const InvoiceForm = ({ patientId, medicalRecordId, onSuccess }) => {
               ) : (
                 <>
                   <Save size={18} />
-                  <span>Simpan Tagihan</span>
+                  <span>{!navigator.onLine ? "Mode Offline (Baca Saja)" : "Simpan Tagihan"}</span>
                 </>
               )}
             </button>

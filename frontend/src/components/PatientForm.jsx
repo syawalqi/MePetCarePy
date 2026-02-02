@@ -153,9 +153,9 @@ const PatientForm = () => {
                   <button 
                     type="submit" 
                     className="btn btn-primary py-2 fw-bold shadow-sm"
-                    disabled={loading}
+                    disabled={loading || !navigator.onLine}
                   >
-                    {loading ? 'Adding Pet...' : 'Register Pet'}
+                    {loading ? 'Menambahkan...' : (!navigator.onLine ? 'Mode Offline (Baca Saja)' : 'Daftarkan Pasien')}
                   </button>
                   <button 
                     type="button" 

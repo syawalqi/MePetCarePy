@@ -21,7 +21,7 @@ const PatientTimeline = ({ patientId }) => {
   const [loading, setLoading] = useState(true);
   const { profile } = useAuth();
 
-  const isAdmin = profile?.role === 'ADMINISTRATOR';
+  const isAdmin = ['SUPERADMIN', 'ADMINISTRATOR'].includes(profile?.role);
 
   useEffect(() => {
     if (patientId) {

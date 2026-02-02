@@ -12,7 +12,7 @@ from app.logger import log_action
 router = APIRouter(prefix="/invoices", tags=["invoices"])
 
 # All staff can manage invoices and payments
-ALL_STAFF = [UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
+ALL_STAFF = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN, UserRole.SUPPORT_STAFF]
 
 @router.post("/", response_model=InvoiceRead, status_code=status.HTTP_201_CREATED)
 def create_invoice(
@@ -27,7 +27,11 @@ def create_invoice(
         action="CREATE",
         entity="INVOICE",
         entity_id=str(db_invoice.id),
-        data={"total": db_invoice.total_amount}
+        data={
+            "total": db_invoice.total_amount,
+            "patient_id": db_invoice.patient_id,
+            "item_count": len(invoice.items)
+        }
     )
     return db_invoice
 
@@ -56,14 +60,18 @@ def update_status(
     invoice_id: int, 
     update: InvoiceUpdate, 
     db: Session = Depends(get_db),
-    current_profile = Depends(check_role(ALL_STAFF))
+    current_profile = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN]))
 ):
     if not update.status:
         raise HTTPException(status_code=400, detail="Status is required")
         
-    db_invoice = crud_invoice.update_invoice_status(db, invoice_id, update.status)
+    # Fetch current invoice to log old status
+    db_invoice = crud_invoice.get_invoice(db, invoice_id)
     if not db_invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    old_status = db_invoice.status
+    db_invoice = crud_invoice.update_invoice_status(db, invoice_id, update.status)
     
     log_action(
         user_id=current_profile.id,
@@ -71,7 +79,29 @@ def update_status(
         action="UPDATE_STATUS",
         entity="INVOICE",
         entity_id=str(invoice_id),
-        data={"new_status": update.status}
+        data={
+            "old_status": old_status,
+            "new_status": update.status
+        }
+    )
+    return db_invoice
+
+@router.delete("/{invoice_id}", response_model=InvoiceRead)
+def delete_invoice(
+    invoice_id: int,
+    db: Session = Depends(get_db),
+    current_profile = Depends(check_role([UserRole.SUPERADMIN]))
+):
+    db_invoice = crud_invoice.delete_invoice(db, invoice_id)
+    if not db_invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    log_action(
+        user_id=current_profile.id,
+        role=current_profile.role,
+        action="DELETE",
+        entity="INVOICE",
+        entity_id=str(invoice_id)
     )
     return db_invoice
 
@@ -85,7 +115,7 @@ def get_monthly_summary(
     year: int, 
     month: int, 
     db: Session = Depends(get_db),
-    _ = Depends(check_role([UserRole.ADMINISTRATOR]))
+    _ = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]))
 ):
     return crud_invoice.get_monthly_report(db, year=year, month=month)
 
@@ -94,7 +124,7 @@ def export_monthly_report_pdf(
     year: int, 
     month: int, 
     db: Session = Depends(get_db),
-    _ = Depends(check_role([UserRole.ADMINISTRATOR]))
+    _ = Depends(check_role([UserRole.SUPERADMIN, UserRole.ADMINISTRATOR]))
 ):
     report = crud_invoice.get_monthly_report(db, year=year, month=month)
     month_name = datetime(year, month, 1).strftime('%B')
