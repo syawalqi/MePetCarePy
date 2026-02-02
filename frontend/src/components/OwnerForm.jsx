@@ -54,7 +54,17 @@ const OwnerForm = () => {
     setError(null);
     try {
       const submitData = { ...formData };
-      if (!submitData.email) delete submitData.email;
+
+      // Sanitize phone number: remove spaces, dashes, parentheses
+      // Keep only digits and leading +
+      if (submitData.phone_number) {
+        submitData.phone_number = submitData.phone_number.replace(/[^\d+]/g, '');
+      }
+
+      // Remove empty email
+      if (!submitData.email || submitData.email.trim() === '') {
+        delete submitData.email;
+      }
 
       if (isEditMode) {
         await ownerService.updateOwner(id, submitData);
