@@ -35,7 +35,7 @@ async def add_security_headers(request: Request, call_next):
     return response
 
 app.add_middleware(SlowAPIMiddleware)
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173,https://syawalqi.github.io").split(",")
 
 app.add_middleware(
     CORSMiddleware,
