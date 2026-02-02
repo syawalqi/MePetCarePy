@@ -2,7 +2,7 @@
 
 ## Phase 1: PWA Configuration & Auto-Update
 - [x] Task: Update `vite.config.js` to ensure the Web App Manifest is correctly generated with `display: standalone` and correct theme colors. 5cc204c
-- [ ] Task: Update `vite.config.js` to configure `vite-plugin-pwa` for prompt-based updates (`registerType: 'prompt'`) instead of `autoUpdate`.
+- [x] Task: Update `vite.config.js` to configure `vite-plugin-pwa` for prompt-based updates (`registerType: 'prompt'`) instead of `autoUpdate`. 7c43c5b
 - [ ] Task: Implement a "New Version Available" toast or banner in the UI that triggers the update refresh when clicked.
 - [ ] Task: Configure the Service Worker (`vite-plugin-pwa` strategies) to cache specific API `GET` requests (e.g., `/owners`, `/patients`) for offline read-only access.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: PWA Configuration & Auto-Update' (Protocol in workflow.md)
