@@ -14,10 +14,10 @@ const DashboardHome = () => {
   const { profile } = useAuth();
 
   const actions = [
-    { title: 'Pemilik Baru', path: '/owners/new', icon: <Users className="text-primary" />, roles: ['ADMINISTRATOR', 'SUPPORT_STAFF'] },
-    { title: 'Pasien Baru', path: '/patients/new', icon: <PawPrint className="text-success" />, roles: ['ADMINISTRATOR', 'SUPPORT_STAFF'] },
-    { title: 'Kelola Staf', path: '/staff', icon: <ClipboardList className="text-info" />, roles: ['ADMINISTRATOR'] },
-    { title: 'Laporan Keuangan', path: '/reports', icon: <BadgeDollarSign className="text-warning" />, roles: ['ADMINISTRATOR'] },
+    { title: 'Pemilik Baru', path: '/owners/new', icon: <Users className="text-primary" />, roles: ['SUPERADMIN', 'ADMINISTRATOR', 'SUPPORT_STAFF'] },
+    { title: 'Pasien Baru', path: '/patients/new', icon: <PawPrint className="text-success" />, roles: ['SUPERADMIN', 'ADMINISTRATOR', 'SUPPORT_STAFF'] },
+    { title: 'Kelola Staf', path: '/staff', icon: <ClipboardList className="text-info" />, roles: ['SUPERADMIN', 'ADMINISTRATOR'] },
+    { title: 'Laporan Keuangan', path: '/reports', icon: <BadgeDollarSign className="text-warning" />, roles: ['SUPERADMIN', 'ADMINISTRATOR'] },
   ];
 
   const filteredActions = actions.filter(action => action.roles.includes(profile?.role));

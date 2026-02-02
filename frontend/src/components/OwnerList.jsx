@@ -24,7 +24,7 @@ const OwnerList = () => {
   const itemsPerPage = 10;
 
   const { profile } = useAuth();
-  const isManagement = ['ADMINISTRATOR', 'SUPPORT_STAFF'].includes(profile?.role);
+  const isManagement = ['SUPERADMIN', 'ADMINISTRATOR', 'SUPPORT_STAFF'].includes(profile?.role);
 
   // Auto-switch view mode based on screen width on mount
   useEffect(() => {

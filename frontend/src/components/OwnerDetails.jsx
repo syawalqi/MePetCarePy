@@ -9,8 +9,8 @@ const OwnerDetails = () => {
   const [loading, setLoading] = useState(true);
   const { profile } = useAuth();
 
-  const isManagement = ['ADMINISTRATOR', 'SUPPORT_STAFF'].includes(profile?.role);
-  const canViewRecords = ['ADMINISTRATOR', 'VETERINARIAN'].includes(profile?.role);
+  const isManagement = ['SUPERADMIN', 'ADMINISTRATOR', 'SUPPORT_STAFF'].includes(profile?.role);
+  const canViewRecords = ['SUPERADMIN', 'ADMINISTRATOR', 'VETERINARIAN'].includes(profile?.role);
 
   useEffect(() => {
     loadOwner();
