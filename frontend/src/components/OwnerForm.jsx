@@ -15,17 +15,16 @@ const OwnerForm = () => {
     address: '',
   });
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Fetch data if in edit mode
   useEffect(() => {
     if (isEditMode) {
       const fetchOwner = async () => {
-        setLoading(true);
+        setPageLoading(true);
         try {
           const response = await ownerService.getOwner(id);
-          // Assuming response.data contains the owner fields directly
-          // Adjust checks based on actual API response structure if needed (e.g. response.data.data)
           const data = response.data;
           setFormData({
             full_name: data.full_name || '',
@@ -35,9 +34,9 @@ const OwnerForm = () => {
           });
         } catch (err) {
           console.error('Error fetching owner:', err);
-          setError('Failed to load owner details.');
+          setError('Gagal memuat detail pemilik. Pastikan ID benar dan Anda memiliki akses.');
         } finally {
-          setLoading(false);
+          setPageLoading(false);
         }
       };
       fetchOwner();
@@ -74,17 +73,26 @@ const OwnerForm = () => {
       navigate('/owners');
     } catch (error) {
       console.error('Error saving owner:', error);
-      setError('Failed to save owner. Please check the data.');
+      setError(error.response?.data?.detail || 'Gagal menyimpan data pemilik. Periksa kembali input Anda.');
     } finally {
       setLoading(false);
     }
   };
 
+  if (pageLoading) {
+    return (
+      <div className="container py-5 text-center">
+        <div className="spinner-border text-primary" role="status"></div>
+        <p className="mt-3 text-muted">Memuat data pemilik...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container-fluid py-2">
       <button onClick={() => navigate(-1)} className="btn btn-link text-muted d-flex align-items-center gap-2 mb-4 p-0">
         <ArrowLeft size={16} />
-        <span>Back to Directory</span>
+        <span>Kembali</span>
       </button>
 
       <div className="row justify-content-center">
@@ -92,11 +100,11 @@ const OwnerForm = () => {
           <div className="card shadow-sm border-0">
             <div className="card-body p-4 p-md-5">
               <div className="mb-4">
-                <h2 className="fw-bold mb-1">{isEditMode ? 'Edit Owner' : 'Register New Owner'}</h2>
+                <h2 className="fw-bold mb-1">{isEditMode ? 'Edit Pemilik' : 'Registrasi Pemilik Baru'}</h2>
                 <p className="text-muted">
                   {isEditMode
-                    ? 'Update the owner\'s contact information.'
-                    : 'Enter contact information for the clinic\'s new client.'}
+                    ? 'Perbarui informasi kontak pemilik.'
+                    : 'Masukkan informasi kontak untuk klien baru klinik.'}
                 </p>
               </div>
 
@@ -181,17 +189,17 @@ const OwnerForm = () => {
                     disabled={loading || !navigator.onLine}
                   >
                     {loading
-                      ? 'Saving...'
+                      ? 'Menyimpan...'
                       : (!navigator.onLine
                         ? 'Mode Offline (Baca Saja)'
-                        : (isEditMode ? 'Update Owner' : 'Register Owner'))}
+                        : (isEditMode ? 'Perbarui Profil' : 'Daftarkan Pemilik'))}
                   </button>
                   <button
                     type="button"
                     className="btn btn-link text-muted"
                     onClick={() => navigate('/owners')}
                   >
-                    Cancel
+                    Batal
                   </button>
                 </div>
               </form>
