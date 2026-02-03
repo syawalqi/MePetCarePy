@@ -29,5 +29,6 @@ class UserSession(Base):
     user_id: Mapped[str] = mapped_column(String, ForeignKey("profiles.id"), unique=True) # Unique ensures single session
     session_token: Mapped[str] = mapped_column(String, index=True) # JWT or random token
     last_activity: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     
     user = relationship("Profile", back_populates="sessions")

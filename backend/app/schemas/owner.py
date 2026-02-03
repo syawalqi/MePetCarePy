@@ -29,3 +29,9 @@ class OwnerRead(OwnerBase):
     patients: List[PatientRead] = []
 
     model_config = ConfigDict(from_attributes=True)
+
+class PaginatedOwnerRead(BaseModel):
+    items: List[OwnerRead]
+    total: int
+    page: int
+    limit: int

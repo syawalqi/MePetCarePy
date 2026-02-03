@@ -22,22 +22,41 @@ const OwnerList = () => {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('card'); // 'card' or 'table'
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
   const itemsPerPage = 10;
 
   const { profile } = useAuth();
   const isManagement = ['SUPERADMIN', 'ADMINISTRATOR', 'SUPPORT_STAFF'].includes(profile?.role);
 
-  // ... (useEffect handleResize)
+  // Responsive view mode
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setViewMode('table');
+      } else {
+        setViewMode('card');
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
+  // Load owners when page changes (parallel, non-blocking)
   useEffect(() => {
     loadOwners();
-  }, []);
+  }, [currentPage]);
 
   const loadOwners = async () => {
     try {
-      const response = await ownerService.getOwners();
-      setOwners(response.data);
+      setLoading(true);
+      const response = await ownerService.getOwners({
+        page: currentPage,
+        limit: itemsPerPage
+      });
+      setOwners(response.data.items);
+      setTotalPages(Math.ceil(response.data.total / itemsPerPage));
     } catch (error) {
       console.error('Error loading owners:', error);
     } finally {
@@ -45,21 +64,14 @@ const OwnerList = () => {
     }
   };
 
-  const sortedOwners = [...owners].sort((a, b) => {
-    if (sortOrder === 'newest') return b.id - a.id;
-    return a.id - b.id;
-  });
-
-  const filteredOwners = sortedOwners.filter(owner =>
+  // Client-side filtering for search (server-side search can be added later)
+  const filteredOwners = owners.filter(owner =>
     owner.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     owner.phone_number.includes(searchTerm)
   );
 
-  // Pagination Logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredOwners.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredOwners.length / itemsPerPage);
+  // Display current page items from server
+  const currentItems = filteredOwners;
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 

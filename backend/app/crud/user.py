@@ -30,13 +30,20 @@ def get_session(db: Session, user_id: str):
 def create_or_update_session(db: Session, user_id: str, token: str):
     db_session = get_session(db, user_id)
     now = datetime.now(UTC)
+    expires_at = now + timedelta(hours=1)
     
     if db_session:
         # If session exists, we update the token and timestamp (handles relogin)
         db_session.session_token = token
         db_session.last_activity = now
+        db_session.expires_at = expires_at  # Reset expiry on new login
     else:
-        db_session = UserSession(user_id=user_id, session_token=token, last_activity=now)
+        db_session = UserSession(
+            user_id=user_id, 
+            session_token=token, 
+            last_activity=now,
+            expires_at=expires_at
+        )
         db.add(db_session)
     
     db.commit()
@@ -58,13 +65,24 @@ def validate_session(db: Session, user_id: str, token: str):
     if db_session.session_token != token:
         return False, "Session token mismatch. User might be logged in elsewhere."
     
-    # Check inactivity (1 hour)
-    if datetime.now(UTC) - db_session.last_activity > timedelta(hours=1):
+    now = datetime.now(UTC)
+    
+    # Check absolute expiry (1 hour from login)
+    if now > db_session.expires_at:
+        db.delete(db_session)
+        db.commit()
+        return False, "Session expired (absolute 1-hour limit)."
+    
+    # Check inactivity (1 hour since last activity)
+    if now - db_session.last_activity > timedelta(hours=1):
         db.delete(db_session)
         db.commit()
         return False, "Session expired due to inactivity."
     
-    # Update last activity
-    db_session.last_activity = datetime.now(UTC)
-    db.commit()
+    # Throttle last_activity updates: Only update if >5 minutes since last update
+    # This reduces DB writes while maintaining security
+    if now - db_session.last_activity > timedelta(minutes=5):
+        db_session.last_activity = now
+        db.commit()
+    
     return True, "Valid"

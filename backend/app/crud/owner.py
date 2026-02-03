@@ -12,6 +12,9 @@ def get_owner(db: Session, owner_id: int):
 def get_owners(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Owner).filter(Owner.is_deleted == False).order_by(Owner.id.desc()).offset(skip).limit(limit).all()
 
+def get_owners_count(db: Session) -> int:
+    return db.query(Owner).filter(Owner.is_deleted == False).count()
+
 def create_owner(db: Session, owner: OwnerCreate):
     try:
         db_owner = Owner(**owner.model_dump())

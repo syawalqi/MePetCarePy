@@ -26,8 +26,12 @@ def test_get_owners(client):
     )
     response = client.get("/owners/")
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
-    assert len(response.json()) >= 1
+    data = response.json()
+    # Pagination check
+    assert "items" in data
+    assert isinstance(data["items"], list)
+    assert data["total"] >= 1
+    assert len(data["items"]) >= 1
 
 def test_get_owner_by_id(client):
     create_response = client.post(

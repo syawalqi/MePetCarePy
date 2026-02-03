@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
-from app.schemas.owner import OwnerCreate, OwnerRead, OwnerUpdate
+from app.schemas.owner import OwnerCreate, OwnerRead, OwnerUpdate, PaginatedOwnerRead
 from app.crud import owner as crud_owner
 from app.dependencies import check_role
 from app.models.user import UserRole
@@ -35,16 +35,19 @@ def create_owner(
     )
     return db_owner
 
-@router.get("/", response_model=List[OwnerRead])
+@router.get("/", response_model=PaginatedOwnerRead)
 @limiter.limit(get_dynamic_limit)
 def read_owners(
     request: Request,
-    skip: int = 0, 
-    limit: int = 100, 
+    page: int = 1, 
+    limit: int = 10, 
     db: Session = Depends(get_db),
     _ = Depends(check_role(ALL_STAFF))
 ):
-    return crud_owner.get_owners(db, skip=skip, limit=limit)
+    skip = (page - 1) * limit
+    items = crud_owner.get_owners(db, skip=skip, limit=limit)
+    total = crud_owner.get_owners_count(db)
+    return {"items": items, "total": total, "page": page, "limit": limit}
 
 @router.get("/search/", response_model=List[OwnerRead])
 @limiter.limit(get_dynamic_limit)
