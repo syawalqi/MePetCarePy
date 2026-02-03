@@ -8,7 +8,7 @@ import {
   BadgeDollarSign,
   ChevronRight
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 const DashboardHome = () => {
   const { profile } = useAuth();

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { userService } from '../api/userService';
+import { userService } from '../../api/userService';
 import { Link } from 'react-router-dom';
-import LoadingScreen from './LoadingScreen';
-import { useAuth } from '../context/AuthContext';
+import LoadingScreen from '../common/LoadingScreen';
+import { useAuth } from '../../context/AuthContext';
 import {
   Users,
   UserPlus,
@@ -48,7 +48,7 @@ const StaffList = () => {
     }
   };
 
-  const filteredUsers = users.filter(u => 
+  const filteredUsers = users.filter(u =>
     u.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.role?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -96,9 +96,9 @@ const StaffList = () => {
             <span className="input-group-text bg-white border-end-0 text-muted">
               <Search size={18} />
             </span>
-            <input 
-              type="text" 
-              className="form-control border-start-0 ps-0" 
+            <input
+              type="text"
+              className="form-control border-start-0 ps-0"
               placeholder="Cari nama, email, atau role..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -107,13 +107,13 @@ const StaffList = () => {
         </div>
         <div className="col-12 col-md-6 d-flex justify-content-md-end gap-2">
           <div className="btn-group shadow-sm">
-            <button 
+            <button
               className={`btn ${viewMode === 'card' ? 'btn-primary' : 'btn-outline-secondary bg-white'}`}
               onClick={() => setViewMode('card')}
             >
               <LayoutGrid size={18} />
             </button>
-            <button 
+            <button
               className={`btn ${viewMode === 'table' ? 'btn-primary' : 'btn-outline-secondary bg-white'}`}
               onClick={() => setViewMode('table')}
             >
@@ -143,7 +143,7 @@ const StaffList = () => {
                         <div className="d-flex flex-column align-items-end gap-2">
                           {getRoleBadge(u.role)}
                           {isSuperAdmin && u.id !== profile?.id && (
-                            <button 
+                            <button
                               onClick={() => handleDelete(u.id)}
                               className="btn btn-link text-danger p-0"
                               title="Hapus Staf"
@@ -153,7 +153,7 @@ const StaffList = () => {
                           )}
                         </div>
                       </div>
-                      
+
                       <h5 className="card-title fw-bold mb-1">{u.full_name}</h5>
                       <div className="d-flex align-items-center gap-2 text-muted small mb-3">
                         <Mail size={14} />
@@ -197,7 +197,7 @@ const StaffList = () => {
                         </td>
                         <td className="pe-4 text-end">
                           {isSuperAdmin && u.id !== profile?.id ? (
-                            <button 
+                            <button
                               onClick={() => handleDelete(u.id)}
                               className="btn btn-outline-danger btn-sm rounded-circle border-0"
                               title="Hapus Staf"

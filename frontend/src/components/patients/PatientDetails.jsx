@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { patientService } from '../api/patientService';
+import { patientService } from '../../api/patientService';
 import PatientTimeline from './PatientTimeline';
 import InvoiceForm from '../invoices/InvoiceForm';
 import InvoiceList from '../invoices/InvoiceList';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { ArrowLeft, Plus, Receipt, Calendar, Info, User, PawPrint } from 'lucide-react';
 
 const PatientDetails = () => {

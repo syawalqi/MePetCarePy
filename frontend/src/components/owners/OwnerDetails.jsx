@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ownerService } from '../api/ownerService';
-import { useAuth } from '../context/AuthContext';
+import { ownerService } from '../../api/ownerService';
+import { useAuth } from '../../context/AuthContext';
 import {
   User,
   Phone,

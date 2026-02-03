@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { invoiceService } from '../api/invoiceService';
-import { useAuth } from '../context/AuthContext';
+import { invoiceService } from '../../api/invoiceService';
+import { useAuth } from '../../context/AuthContext';
 import { BarChart3, Download, Calendar as CalendarIcon, Users, BadgeDollarSign, UserCheck } from 'lucide-react';
-import LoadingScreen from './LoadingScreen';
+import LoadingScreen from '../common/LoadingScreen';
 
 const FinancialDashboard = () => {
   const { profile } = useAuth();
@@ -77,10 +77,10 @@ const FinancialDashboard = () => {
               <label className="form-label small fw-bold text-uppercase text-muted">Tahun</label>
               <div className="input-group">
                 <span className="input-group-text bg-light border-0"><CalendarIcon size={16} /></span>
-                <select 
-                  className="form-select bg-light border-0 fw-medium" 
-                  value={date.year} 
-                  onChange={(e) => setDate({...date, year: parseInt(e.target.value)})}
+                <select
+                  className="form-select bg-light border-0 fw-medium"
+                  value={date.year}
+                  onChange={(e) => setDate({ ...date, year: parseInt(e.target.value) })}
                 >
                   {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
                 </select>
@@ -90,13 +90,13 @@ const FinancialDashboard = () => {
               <label className="form-label small fw-bold text-uppercase text-muted">Bulan</label>
               <div className="input-group">
                 <span className="input-group-text bg-light border-0"><CalendarIcon size={16} /></span>
-                <select 
-                  className="form-select bg-light border-0 fw-medium" 
-                  value={date.month} 
-                  onChange={(e) => setDate({...date, month: parseInt(e.target.value)})}
+                <select
+                  className="form-select bg-light border-0 fw-medium"
+                  value={date.month}
+                  onChange={(e) => setDate({ ...date, month: parseInt(e.target.value) })}
                 >
-                  {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-                    <option key={m} value={m}>{new Date(0, m-1).toLocaleString('id-ID', { month: 'long' })}</option>
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                    <option key={m} value={m}>{new Date(0, m - 1).toLocaleString('id-ID', { month: 'long' })}</option>
                   ))}
                 </select>
               </div>
@@ -134,10 +134,10 @@ const FinancialDashboard = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="text-center text-md-end">
-            <button 
-              onClick={handleDownloadPDF} 
+            <button
+              onClick={handleDownloadPDF}
               className="btn btn-outline-primary btn-lg px-4 shadow-sm fw-bold d-inline-flex align-items-center gap-2 rounded-pill"
             >
               <Download size={20} />

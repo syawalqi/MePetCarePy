@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { patientService } from '../api/patientService';
+import { patientService } from '../../api/patientService';
 import { Link } from 'react-router-dom';
-import LoadingScreen from './LoadingScreen';
+import LoadingScreen from '../common/LoadingScreen';
 import {
   PawPrint,
   Dog,
@@ -81,9 +81,9 @@ const PatientList = () => {
   return (
     <div className="container-fluid">
       {/* Header */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2 className="fw-bold m-0">Patients</h2>
-        </div>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="fw-bold m-0">Patients</h2>
+      </div>
 
       {/* Controls */}
       <div className="card shadow-sm border-0 mb-4 bg-white">
@@ -111,7 +111,7 @@ const PatientList = () => {
                 <span className="input-group-text bg-transparent border-0 pe-0">
                   <ArrowDownNarrowWide size={16} className="text-muted" />
                 </span>
-                <select 
+                <select
                   className="form-select border-0 bg-transparent shadow-none small"
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}

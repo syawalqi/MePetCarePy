@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ownerService } from '../api/ownerService';
+import { ownerService } from '../../api/ownerService';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import LoadingScreen from './LoadingScreen';
+import { useAuth } from '../../context/AuthContext';
+import LoadingScreen from '../common/LoadingScreen';
 import {
   Plus,
   User,
@@ -107,7 +107,7 @@ const OwnerList = () => {
                 <span className="input-group-text bg-transparent border-0 pe-0">
                   <ArrowDownNarrowWide size={16} className="text-muted" />
                 </span>
-                <select 
+                <select
                   className="form-select border-0 bg-transparent shadow-none small"
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}

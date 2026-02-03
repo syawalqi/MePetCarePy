@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { medicalRecordService } from '../api/medicalRecordService';
+import { medicalRecordService } from '../../api/medicalRecordService';
 import { Activity, Clipboard, ArrowLeft, Thermometer, Heart, Wind, Scale, Save, Stethoscope, AlertCircle, FileText } from 'lucide-react';
 
 const MedicalRecordForm = () => {

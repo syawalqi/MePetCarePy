@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { supabase } from '../api/supabase';
-import { userService } from '../api/userService';
+import { supabase } from '../../api/supabase';
+import { userService } from '../../api/userService';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, Activity } from 'lucide-react';
-import LoadingScreen from './LoadingScreen';
+import LoadingScreen from '../common/LoadingScreen';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -27,7 +27,7 @@ const Login = () => {
 
       // Create Session in Backend
       await userService.createSession(data.session.access_token);
-      
+
       navigate('/');
     } catch (err) {
       setError(err.message || "Gagal masuk ke sistem.");

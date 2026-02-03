@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { invoiceService } from '../api/invoiceService';
-import { useAuth } from '../context/AuthContext';
+import { invoiceService } from '../../api/invoiceService';
+import { useAuth } from '../../context/AuthContext';
 import { CreditCard, Calendar, CheckCircle2, Clock, FileText, Trash2 } from 'lucide-react';
 
 const InvoiceList = ({ patientId }) => {
@@ -85,7 +85,7 @@ const InvoiceList = ({ patientId }) => {
                     <div className="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
                       Tagihan #{inv.id}
                       {isSuperAdmin && (
-                        <button 
+                        <button
                           onClick={() => handleDelete(inv.id)}
                           className="btn btn-link text-danger p-0 border-0"
                           title="Hapus Tagihan"

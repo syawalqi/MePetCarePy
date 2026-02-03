@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { patientService } from '../api/patientService';
+import { patientService } from '../../api/patientService';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PawPrint, Info, Calendar, User, ArrowLeft, Dog } from 'lucide-react';
 

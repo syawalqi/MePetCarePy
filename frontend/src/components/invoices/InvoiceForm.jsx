@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { invoiceService } from '../api/invoiceService';
+import { invoiceService } from '../../api/invoiceService';
 import { Plus, Trash2, Save, FileText, ShoppingBag, X } from 'lucide-react';
 
 const InvoiceForm = ({ patientId, medicalRecordId, onSuccess }) => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { medicalRecordService } from '../api/medicalRecordService';
-import { useAuth } from '../context/AuthContext';
+import { medicalRecordService } from '../../api/medicalRecordService';
+import { useAuth } from '../../context/AuthContext';
 import {
   Trash2,
   Activity,

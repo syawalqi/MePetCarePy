@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ownerService } from '../api/ownerService';
+import { ownerService } from '../../api/ownerService';
 import { useNavigate, useParams } from 'react-router-dom';
 import { User, Mail, Phone, MapPin, ArrowLeft } from 'lucide-react';
 
@@ -53,10 +53,10 @@ const OwnerForm = () => {
     setError(null);
     try {
       const submitData = {};
-      
+
       // Only include fields that have values to satisfy OwnerUpdate optional requirements
       if (formData.full_name) submitData.full_name = formData.full_name;
-      
+
       if (formData.phone_number) {
         // Sanitize: remove non-digits (except leading +)
         submitData.phone_number = formData.phone_number.replace(/[^\d+]/g, '');
@@ -78,7 +78,7 @@ const OwnerForm = () => {
       navigate('/owners');
     } catch (error) {
       console.error('Error saving owner:', error);
-      
+
       const detail = error.response?.data?.detail;
       let errorMessage = 'Gagal menyimpan data pemilik. Periksa kembali input Anda.';
 
