@@ -47,8 +47,9 @@ apiClient.interceptors.response.use(
         .filter(k => k.startsWith('sb-'))
         .forEach(k => localStorage.removeItem(k));
 
-      // Redirect to login page
-      window.location.href = '/login';
+      // Redirect to login page (preserve base path for GitHub Pages)
+      // Use hash routing format: /#/login
+      window.location.hash = '#/login';
     }
     return Promise.reject(error);
   }
