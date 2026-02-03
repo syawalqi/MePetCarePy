@@ -20,6 +20,7 @@ const PatientList = () => {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('card');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [sortOrder, setSortOrder] = useState('newest'); // 'newest' or 'oldest'
   const itemsPerPage = 10;
 
@@ -38,12 +39,17 @@ const PatientList = () => {
 
   useEffect(() => {
     loadPatients();
-  }, []);
+  }, [currentPage]); // Re-fetch when page changes
 
   const loadPatients = async () => {
     try {
-      const response = await patientService.getPatients();
-      setPatients(response.data);
+      setLoading(true);
+      const response = await patientService.getPatients({
+        page: currentPage,
+        limit: itemsPerPage
+      });
+      setPatients(response.data.items);
+      setTotalPages(Math.ceil(response.data.total / itemsPerPage));
     } catch (error) {
       console.error('Error loading patients:', error);
     } finally {
@@ -51,21 +57,14 @@ const PatientList = () => {
     }
   };
 
-  const sortedPatients = [...patients].sort((a, b) => {
-    if (sortOrder === 'newest') return b.id - a.id;
-    return a.id - b.id;
-  });
-
-  const filteredPatients = sortedPatients.filter(p =>
+  // Client-side filtering for search (server-side search can be added later)
+  const filteredPatients = patients.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.species.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Pagination Logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredPatients.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
+  // Pagination Logic (now displays current page items from server)
+  const currentItems = filteredPatients;
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 

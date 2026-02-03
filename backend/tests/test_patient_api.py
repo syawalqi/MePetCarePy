@@ -26,8 +26,12 @@ def test_get_patients(client):
     
     response = client.get("/patients/")
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
-    assert len(response.json()) >= 1
+    data = response.json()
+    # Pagination check
+    assert "items" in data
+    assert isinstance(data["items"], list)
+    assert data["total"] >= 1
+    assert len(data["items"]) >= 1
 
 def test_get_patient_by_id(client):
     owner_resp = client.post("/owners/", json={"full_name": "Owner One", "phone_number": "1234567890"})

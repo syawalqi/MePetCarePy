@@ -61,3 +61,4 @@ ALL_STAFF = [UserRole.SUPERADMIN, UserRole.ADMINISTRATOR, UserRole.VETERINARIAN,
 @limiter.limit(get_dynamic_limit)
 async def read_root(request: Request, _ = Depends(check_role(ALL_STAFF)), _s = Depends(check_session)):
     return {"message": "Welcome to MePetCarePy API"}
+

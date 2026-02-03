@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, List
 from app.models.patient import PatientGender
 
 class PatientBase(BaseModel):
@@ -28,3 +28,9 @@ class PatientRead(PatientBase):
     is_deleted: bool
 
     model_config = ConfigDict(from_attributes=True)
+
+class PaginatedPatientRead(BaseModel):
+    items: List[PatientRead]
+    total: int
+    page: int
+    limit: int

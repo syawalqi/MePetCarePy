@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
-from app.schemas.patient import PatientCreate, PatientRead, PatientUpdate
+from app.schemas.patient import PatientCreate, PatientRead, PatientUpdate, PaginatedPatientRead
 from app.crud import patient as crud_patient
 from app.dependencies import check_role
 from app.models.user import UserRole
@@ -35,16 +35,19 @@ def create_patient(
     )
     return db_patient
 
-@router.get("/", response_model=List[PatientRead])
+@router.get("/", response_model=PaginatedPatientRead)
 @limiter.limit(get_dynamic_limit)
 def read_patients(
     request: Request,
-    skip: int = 0, 
-    limit: int = 100, 
+    page: int = 1, 
+    limit: int = 10, 
     db: Session = Depends(get_db),
     _ = Depends(check_role(ALL_STAFF))
 ):
-    return crud_patient.get_patients(db, skip=skip, limit=limit)
+    skip = (page - 1) * limit
+    items = crud_patient.get_patients(db, skip=skip, limit=limit)
+    total = crud_patient.get_patients_count(db)
+    return {"items": items, "total": total, "page": page, "limit": limit}
 
 @router.get("/search/", response_model=List[PatientRead])
 @limiter.limit(get_dynamic_limit)

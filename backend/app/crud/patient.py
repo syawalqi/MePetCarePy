@@ -10,6 +10,9 @@ def get_patient(db: Session, patient_id: int):
 def get_patients(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Patient).filter(Patient.is_deleted == False).order_by(Patient.id.desc()).offset(skip).limit(limit).all()
 
+def get_patients_count(db: Session) -> int:
+    return db.query(Patient).filter(Patient.is_deleted == False).count()
+
 def create_patient(db: Session, patient: PatientCreate):
     db_patient = Patient(**patient.model_dump())
     db.add(db_patient)

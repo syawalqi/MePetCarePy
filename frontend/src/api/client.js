@@ -3,12 +3,13 @@ import axios from 'axios';
 // Automatically switch between Local and Production URLs
 // When running 'npm run dev', it will use localhost.
 // When built for production (GitHub Pages), it will use the Railway URL.
-const API_BASE_URL = import.meta.env.DEV 
-  ? 'http://localhost:8000' 
+const API_BASE_URL = import.meta.env.DEV
+  ? 'http://localhost:8000'
   : 'https://mepetcarepy-production.up.railway.app';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 10000, // 10 seconds
   headers: {
     'Content-Type': 'application/json',
   },
